@@ -1,9 +1,22 @@
 #include "parallelizer.hpp"
+#include "semantic-concepts/concepts.hpp"
 #include <iostream>
+#include <visitors.hpp>
 
 void
 parallelize(CParser &parser) {
-    std::cout << "Not implemented yet.\n";
+    std::cout << "---------- Begin Parallelization ----------\n";
+    //std::cout << "Not implemented yet.\n";
+
+    CParser::TranslationUnitContext *tree = parser.translationUnit();
+
+    Program prog;
+    GlobalVisitor visitor(prog);
+    visitor.visitTranslationUnit(tree);
+
+    std::cout << prog.parallelized_code.str() << "\n";
+
+    std::cout << "---------- End Parallelization ----------\n";
 }
 
 void

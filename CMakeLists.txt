@@ -16,12 +16,16 @@ add_executable(${PROJECT_NAME}
     parallelizer/semantic-concepts/function.cpp
     parallelizer/semantic-concepts/program.cpp
     parallelizer/parallelizer.cpp
+    visitors/global_visitor.cpp
+    util/util.cpp
     main.cpp
 )
 
 include_directories(
     antlr4-gen/
     parallelizer/
+    visitors/
+    util/
 )
 
 target_link_libraries(${PROJECT_NAME}

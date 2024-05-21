@@ -80,14 +80,16 @@ public:
 
 
 class Program {
-private:
+    public:
     std::map<std::string, std::shared_ptr<Function>> defined_functions;
     std::map<std::shared_ptr<Function>, std::vector<std::shared_ptr<Function>>> call_graph;
     std::shared_ptr<Function> main;
     std::ostringstream parallelized_code;
-public:
+
     Program();
     ~Program();
+    Program(const Program&) = delete;
+    Program& operator=(const Program&) = delete;
     void add(const std::string& new_code);
 };
 

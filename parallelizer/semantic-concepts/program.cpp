@@ -1,7 +1,6 @@
 #include "concepts.hpp"
 
 Program::Program() : main(nullptr) {}
-
 Program::~Program() {}
 
 void
