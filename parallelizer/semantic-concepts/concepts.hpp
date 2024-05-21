@@ -69,7 +69,7 @@ public:
 
     private:
     bool is_scope(std::shared_ptr<CParser> inst) const;
-    void find_islands(StatBlock block, std::set<StatBlock> &visited, std::list<std::pair<StatBlock, int>>& toposort, int current_island) const;
+    void find_islands(StatBlock block, std::set<StatBlock> &visited, std::list<std::pair<StatBlock, int>>& topsort, int current_island) const;
     void parallelize_reduction(StatBlock block, const std::map<std::string, std::vector<std::string>>& reduction, std::ostringstream& parallelized, int tabs) const;
     bool check_assignment(std::shared_ptr<CParser> assign, std::map<std::string, std::string>& reduction_vars) const;
     bool check_min_max(const std::string& left, std::shared_ptr<CParser> expr2, std::map<std::string, std::string>& reduction_vars) const;
