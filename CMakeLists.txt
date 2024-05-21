@@ -12,11 +12,16 @@ add_executable(${PROJECT_NAME}
     antlr4-gen/CLexer.cpp
     antlr4-gen/CParser.cpp
     antlr4-gen/CVisitor.cpp
+    parallelizer/semantic-concepts/statblock.cpp
+    parallelizer/semantic-concepts/function.cpp
+    parallelizer/semantic-concepts/program.cpp
+    parallelizer/parallelizer.cpp
     main.cpp
 )
 
 include_directories(
     antlr4-gen/
+    parallelizer/
 )
 
 target_link_libraries(${PROJECT_NAME}
