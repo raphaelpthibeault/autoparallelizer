@@ -16,7 +16,15 @@ StatBlock::get_vars_control_struct(CParser::StatementContext *ctx) {
     if (ctx->iterationStatement() != nullptr) {
         get_vars_for_loop(ctx->iterationStatement());
     } else if (ctx->compoundStatement() != nullptr) {
-        get_vars(std::list<CParser::StatementContext *>(ctx->compoundStatement()->blockItemList()->blockItem().begin(), ctx->compoundStatement()->blockItemList()->blockItem().end()));
+        if (ctx->compoundStatement()->blockItemList() != nullptr) {
+            std::list<CParser::StatementContext *> stat_ls;
+            for (auto item : ctx->compoundStatement()->blockItemList()->blockItem()) {
+                if (item->statement() != nullptr) {
+                    stat_ls.push_back(item->statement());
+                }
+            }
+            get_vars(stat_ls);
+        }
     } else if (ctx->selectionStatement() != nullptr) {
         if (ctx->selectionStatement()->expression() != nullptr) {
             new VariableVisitor(ctx->selectionStatement()->expression(), vars_alive, vars_dead);
@@ -31,7 +39,14 @@ StatBlock::get_vars_control_struct(CParser::StatementContext *ctx) {
 void
 StatBlock::get_vars_control_struct_body(CParser::CompoundStatementContext *ctx) {
     if (ctx->blockItemList() != nullptr) {
-        get_vars(std::list<CParser::StatementContext *>(ctx->blockItemList()->blockItem().begin(), ctx->blockItemList()->blockItem().end()));
+        std::list<CParser::StatementContext *> stat_ls;
+        for (auto itm : ctx->blockItemList()->blockItem()) {
+            if (itm->statement() != nullptr) {
+                stat_ls.push_back(itm->statement());
+            }
+        }
+
+        get_vars(stat_ls);
     }
 }
 
@@ -66,7 +81,7 @@ void
 StatBlock::get_vars(std::list<CParser::StatementContext *> ctxs) {
     if (ctxs.empty()) return;
 
-    for (auto it = statements.rbegin(); it != ctxs.rend(); ++it) {
+    for (auto it = ctxs.rbegin(); it != ctxs.rend(); ++it) {
         CParser::StatementContext *next = *it;
         if (is_scope(next)) {
             get_vars_control_struct(next);
@@ -87,7 +102,7 @@ StatBlock::is_scope(CParser::StatementContext *ctx) const {
 std::string
 StatBlock::to_string() const {
     std::stringstream builder;
-    builder << "Block #" << id << "\nInstructions:\n";
+    builder << "Block #" << id << "\nStatements:\n";
     builder << "..........................................\n";
     for (auto stat : statements) {
         builder << get_text(stat) << "\n\n";

@@ -14,7 +14,7 @@ parallelize(CParser &parser) {
     GlobalVisitor visitor(prog);
     visitor.visitTranslationUnit(tree);
 
-    std::cout << prog.parallelized_code.str() << "\n";
+    std::cout << "'" << prog.parallelized_code.str() << "'\n";
 
     std::cout << "---------- End Parallelization ----------\n";
 }
