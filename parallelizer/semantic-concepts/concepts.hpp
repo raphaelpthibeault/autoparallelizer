@@ -45,8 +45,8 @@ public:
     std::list<StatBlock> flow_graph;
     std::map<StatBlock, std::set<StatBlock>> dependency_graph;
     std::list<std::pair<StatBlock, int>> blocks_order;
-    StatBlock decl_block;
-    StatBlock ret_block;
+    std::unique_ptr<StatBlock> decl_block;
+    std::unique_ptr<StatBlock> ret_block;
     std::string id;
     CParser::CompoundStatementContext *body_ctx;
     antlr4::ParserRuleContext *function_ctx;
