@@ -1,6 +1,7 @@
 #ifndef __CONCEPTS_HPP
 #define __CONCEPTS_HPP
 
+#include "ParserRuleContext.h"
 #include <cstddef>
 #include <iostream>
 #include <string>
@@ -39,7 +40,7 @@ public:
 };
 
 
-class Function : public std::enable_shared_from_this<Function> {
+class Function {
 public:
     std::list<StatBlock> flow_graph;
     std::map<StatBlock, std::set<StatBlock>> dependency_graph;
@@ -47,11 +48,12 @@ public:
     StatBlock decl_block;
     StatBlock ret_block;
     std::string id;
-    std::shared_ptr<CParser> body_ctx;
-    std::shared_ptr<CParser> func_ctx;
+    CParser::CompoundStatementContext *body_ctx;
+    antlr4::ParserRuleContext *function_ctx;
     std::set<std::string> vars_alive, vars_dead;
 
-    Function(const std::string &id, std::shared_ptr<CParser> body_ctx = nullptr, std::shared_ptr<CParser> func_ctx = nullptr);
+    Function(const std::string &id, CParser::CompoundStatementContext *body_ctx, antlr4::ParserRuleContext *function_ctx);
+    Function(const std::string &id);
     ~Function();
     void build_flow_graph();
     void print_flow_graph() const;
@@ -59,7 +61,13 @@ public:
     void print_dependency_graph() const;
     void find_dependencies();
     void find_disconnected_components();
-    static std::string get_virtual_name(std::shared_ptr<CParser> ctx);
+    static std::string get_virtual_name(CParser::FunctionDefinitionContext *ctx);
+    static std::string get_virtual_name(CParser::PostfixExpressionContext *ctx);
+    std::string parallelize(bool reduction_operation) const;
+    void parallelize_reduction(StatBlock &block, const std::map<std::string, std::vector<std::string>> &reduction, std::stringstream &parallelized, int tabs) const;
+    bool check_assignment(CParser::AssignmentExpressionContext *assign, std::map<std::string, std::string> &reduction_vars) const;
+    bool check_min_max(const std::string &left, CParser::ConditionalExpressionContext *expr2, std::map<std::string, std::string> &reduction_vars) const;
+    std::map<std::string, std::vector<std::string>> check_reduction(CParser::CompoundStatementContext *ctx) const;
     static std::pair<std::vector<std::string>, int> analyze(const std::string& text);
 
     bool operator<(const Function& other) const {
@@ -67,13 +75,8 @@ public:
     }
 
 private:
-    bool is_scope(std::shared_ptr<CParser> inst) const;
-    void find_islands(StatBlock block, std::set<StatBlock> &visited, std::list<std::pair<StatBlock, int>>& topsort, int current_island) const;
-    void parallelize_reduction(StatBlock block, const std::map<std::string, std::vector<std::string>>& reduction, std::ostringstream& parallelized, int tabs) const;
-    bool check_assignment(std::shared_ptr<CParser> assign, std::map<std::string, std::string>& reduction_vars) const;
-    bool check_min_max(const std::string& left, std::shared_ptr<CParser> expr2, std::map<std::string, std::string>& reduction_vars) const;
-    std::map<std::string, std::vector<std::string>> check_reduction(std::shared_ptr<CParser> ctx) const;
-    std::string get_text(std::shared_ptr<CParser> ctx) const;
+    bool is_scope(CParser::StatementContext *ctx);
+    void get_vars();
 };
 
 
