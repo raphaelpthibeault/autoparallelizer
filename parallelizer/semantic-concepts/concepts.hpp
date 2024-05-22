@@ -42,9 +42,9 @@ public:
 
 class Function {
 public:
-    std::list<StatBlock> flow_graph;
+    std::vector<StatBlock> flow_graph;
     std::map<StatBlock, std::set<StatBlock>> dependency_graph;
-    std::list<std::pair<StatBlock, int>> blocks_order;
+    std::vector<std::pair<StatBlock, int>> blocks_order;
     std::unique_ptr<StatBlock> decl_block;
     std::unique_ptr<StatBlock> ret_block;
     std::string id;

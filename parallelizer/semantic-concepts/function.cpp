@@ -1,4 +1,5 @@
 #include "concepts.hpp"
+#include <vector>
 
 Function::Function(const std::string &id, CParser::CompoundStatementContext *body_ctx, antlr4::ParserRuleContext *function_ctx)
     : id(id), body_ctx(body_ctx), function_ctx(function_ctx){
@@ -42,4 +43,52 @@ Function::build_flow_graph() {
         if (!curr.statements.empty()) {
             flow_graph.push_back(curr);
         }
+}
+
+void
+Function::print_flow_graph() const {
+   for (const auto &block : flow_graph) {
+       std::cout << block.to_string() << "\n";
+   }
+}
+
+void
+Function::build_dependency_graph() {
+    if (flow_graph.empty()) return;
+    int i, j;
+
+    std::vector<StatBlock> blocks;
+    for (const auto &block : flow_graph) {
+        dependency_graph[block] = std::set<StatBlock>();
+        blocks.push_back(block);
+    }
+
+    for (i = flow_graph.size()-1; i >= 0; --i) {
+        for (const auto &alive : flow_graph[i].vars_alive) {
+            for (j = i - 1; j >= 0; --j) {
+                if (flow_graph[j].vars_dead.count(alive)) {
+                    dependency_graph[blocks[j]].insert(blocks[i]);
+                    break;
+                }
+            }
+        }
+        for (const auto &dead : flow_graph[i].vars_dead) {
+            for (j = i - 1; j >= 0; --j) {
+                if (flow_graph[j].vars_alive.count(dead)) {
+                    dependency_graph[blocks[j]].insert(blocks[i]);
+                }
+            }
+        }
+    }
+}
+
+void
+Function::print_dependency_graph() const {
+    for (const auto &[block, neighbors] : dependency_graph) {
+        std::cout << block.id << " -> ";
+        for (const auto &neighbor : neighbors) {
+            std::cout << neighbor.id << " ";
+        }
+        std::cout << "\n";
+    }
 }
