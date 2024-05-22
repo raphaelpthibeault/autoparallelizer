@@ -75,6 +75,7 @@ public:
     }
 
 private:
+    void find_disconnected_components(StatBlock block, std::set<StatBlock> &visited, std::vector<std::pair<StatBlock, int>> &topsort, int curr_cc);
     bool is_scope(CParser::StatementContext *ctx);
     void get_vars();
 };

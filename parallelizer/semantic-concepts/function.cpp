@@ -1,4 +1,5 @@
 #include "concepts.hpp"
+#include <iterator>
 #include <vector>
 
 Function::Function(const std::string &id, CParser::CompoundStatementContext *body_ctx, antlr4::ParserRuleContext *function_ctx)
@@ -90,5 +91,84 @@ Function::print_dependency_graph() const {
             std::cout << neighbor.id << " ";
         }
         std::cout << "\n";
+    }
+}
+
+void
+Function::find_dependencies() {
+    if (body_ctx == nullptr) return;
+    get_vars();
+}
+
+void
+Function::find_disconnected_components() {
+    std::set<StatBlock> visited;
+    blocks_order.clear();
+
+    int curr_cc = 0;
+    for (const auto &[block, neighbors] : dependency_graph) {
+        if (!visited.count(block)) {
+            find_disconnected_components(block, visited, blocks_order, curr_cc);
+        }
+    }
+
+}
+
+std::string
+Function::get_virtual_name(CParser::FunctionDefinitionContext *ctx) {
+    std::stringstream name;
+
+    name << ctx->declarator()->directDeclarator()->getText();
+
+    if (ctx->declarator()->directDeclarator()->parameterTypeList() != nullptr) {
+        name << "-" << ctx->declarator()->directDeclarator()->parameterTypeList()->parameterList()->parameterDeclaration().size();
+    }
+
+    return name.str();
+}
+
+std::string
+Function::get_virtual_name(CParser::PostfixExpressionContext *ctx) {
+    std::stringstream name;
+
+    if (!ctx->Identifier().empty()) {
+        name << ctx->Identifier(0)->getText();
+    }
+
+    if (!ctx->argumentExpressionList().empty()) {
+        name << "-" << ctx->argumentExpressionList().size();
+    }
+
+    return name.str();
+}
+
+
+
+
+void
+Function::find_disconnected_components(StatBlock block, std::set<StatBlock> &visited, std::vector<std::pair<StatBlock, int>> &topsort, int curr_cc) {
+    visited.insert(block);
+    const auto &neighbors = dependency_graph[block];
+
+    for (const auto &neighbor : neighbors) {
+        if (!visited.count(neighbor)) {
+            find_disconnected_components(neighbor, visited, topsort, curr_cc);
+        }
+    }
+
+    topsort.emplace(topsort.begin(), curr_cc);
+}
+
+bool
+Function::is_scope(CParser::StatementContext *ctx) {
+    return ctx->iterationStatement() != nullptr || ctx->compoundStatement() != nullptr || ctx->selectionStatement() != nullptr;
+}
+
+void
+Function::get_vars() {
+    vars_alive.clear();
+    vars_dead.clear();
+    for (auto it = flow_graph.rbegin(); it != flow_graph.rend(); ++it) {
+        it->get_vars();
     }
 }
