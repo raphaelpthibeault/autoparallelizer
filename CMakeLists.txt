@@ -17,6 +17,7 @@ add_executable(${PROJECT_NAME}
     parallelizer/semantic-concepts/program.cpp
     parallelizer/parallelizer.cpp
     visitors/global_visitor.cpp
+    visitors/variable_visitor.cpp
     util/util.cpp
     main.cpp
 )
