@@ -99,10 +99,10 @@ public:
     Program(const Program&) = delete;
     Program& operator=(const Program&) = delete;
     void add(const std::string& new_code);
-    void print_defined_functions() const;
-    void print_call_graph() const;
-    bool is_defined_function(std::string id) const;
-    bool is_caller_function(std::string id) const;
+    void print_defined_functions();
+    void print_call_graph();
+    bool is_defined_function(std::string id);
+    bool is_caller_function(std::string id);
 };
 
 

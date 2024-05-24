@@ -27,22 +27,24 @@ CallGraphVisitor::visitPostfixExpression(CParser::PostfixExpressionContext *ctx)
 
     Notes:
         > caller: parent->second
-        > callee: ctx
+        > called: ctx
         > we treat functions not defined in the file as an atomic statement
     */
 
-    auto f_called = std::make_shared<Function>(Function::get_virtual_name(ctx));
+    auto f_called_name = Function::get_virtual_name(ctx);
 
-    if (program.defined_functions.count(f_called->id)) {
+    // recursive case
+    if (f_called_name == parent->first) {
+        program.call_graph[parent->second].push_back(parent->second);
+    } else if (program.defined_functions.count(f_called_name)) {
+        auto foo = program.defined_functions[f_called_name];
+        //std::cout << foo->id << "" << foo->body_ctx->getText() << "\n";
 
-        program.call_graph[parent->second].push_back(f_called);
-
-        //if (program.call_graph.find(f_called) == program.call_graph.end()) {
-        if (!program.is_caller_function(f_called->id)) {
-            program.call_graph[f_called] = std::vector<std::shared_ptr<Function>>();
-        } else {
+        // locally defined function
+        program.call_graph[parent->second].push_back(program.defined_functions[f_called_name]);
+        if (!program.is_caller_function(f_called_name)) {
+            program.call_graph[program.defined_functions[f_called_name]] = std::vector<std::shared_ptr<Function>>();
         }
-
     }
 
     return visitChildren(ctx);

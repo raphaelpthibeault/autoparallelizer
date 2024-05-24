@@ -9,19 +9,19 @@ Program::add(const std::string &new_code) {
 }
 
 void
-Program::print_defined_functions() const {
+Program::print_defined_functions() {
     for (const auto &entry : defined_functions) {
-        std::cout << "Function: " << entry.first << " " << entry.second->to_string() << "\n";
+        std::cout << "Function: " << entry.first << " " << entry.second->body_ctx->getText() << "\n";
     }
 }
 
 void
-Program::print_call_graph() const {
+Program::print_call_graph() {
     for (const auto &entry : call_graph) {
         const auto& function = entry.first;
         const auto& neighbors = entry.second;
 
-        std::cout << function->id << " -> ";
+        std::cout << function->id << " " << function->body_ctx->getText() << " -> ";
         for (const auto& neighbor : neighbors) {
             std::cout << neighbor->id << " ";
         }
@@ -30,7 +30,7 @@ Program::print_call_graph() const {
 }
 
 bool
-Program::is_defined_function(std::string id) const {
+Program::is_defined_function(std::string id) {
     for (const auto &entry : defined_functions) {
         if (entry.first == id)
             return true;
@@ -39,7 +39,7 @@ Program::is_defined_function(std::string id) const {
 }
 
 bool
-Program::is_caller_function(std::string id) const {
+Program::is_caller_function(std::string id) {
     for (const auto &entry : call_graph) {
         if (entry.first->id == id) {
             return true;

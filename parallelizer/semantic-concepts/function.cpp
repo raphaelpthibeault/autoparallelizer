@@ -21,33 +21,36 @@ Function::build_flow_graph() {
     int index = 1;
 
     StatBlock curr(index++);
-    for (auto *inst : body_ctx->blockItemList()->blockItem()) {
-            if (is_scope(inst->statement())) {
-                flow_graph.push_back(curr);
-                if (curr.statements.empty()) {
-                    curr.add_statement(inst->statement());
-                } else {
-                    StatBlock controlBlock(index++);
-                    controlBlock.add_statement(inst->statement());
-                    flow_graph.push_back(controlBlock);
-                }
-                curr = StatBlock(index++);
-            } else if (inst->statement()->jumpStatement() != nullptr && inst->statement()->jumpStatement()->Return() != nullptr) {
-                ret_block = std::make_unique<StatBlock>(index++);
-                ret_block->add_statement(inst->statement());
-            } else if (inst->declaration() != nullptr) {
-                if (!decl_block) {
-                    decl_block = std::make_unique<StatBlock>(0);
-                }
-                decl_block->add_statement(inst->statement());
-            } else {
-                curr.add_statement(inst->statement());
-            }
-        }
 
-        if (!curr.statements.empty()) {
+    std::cout << body_ctx->blockItemList()->getText() << "\n";
+
+    for (auto *inst : body_ctx->blockItemList()->blockItem()) {
+        if (is_scope(inst->statement())) {
             flow_graph.push_back(curr);
+            if (curr.statements.empty()) {
+                curr.add_statement(inst->statement());
+            } else {
+                StatBlock controlBlock(index++);
+                controlBlock.add_statement(inst->statement());
+                flow_graph.push_back(controlBlock);
+            }
+            curr = StatBlock(index++);
+        } else if (inst->statement()->jumpStatement() != nullptr && inst->statement()->jumpStatement()->Return() != nullptr) {
+            ret_block = std::make_unique<StatBlock>(index++);
+            ret_block->add_statement(inst->statement());
+        } else if (inst->declaration() != nullptr) {
+            if (!decl_block) {
+                decl_block = std::make_unique<StatBlock>(0);
+            }
+            decl_block->add_statement(inst->statement());
+        } else {
+            curr.add_statement(inst->statement());
         }
+    }
+
+    if (!curr.statements.empty()) {
+        flow_graph.push_back(curr);
+    }
 }
 
 void
@@ -290,7 +293,7 @@ Function::analyze(const std::string& text) {
 std::string
 Function::to_string() const {
     std::stringstream ss;
-    ss << "Function ID: " << id << "\n";
+    ss << "ID: " << id << " ;BODY_CTX: " << body_ctx->getText() << "\n";
     return ss.str();
 }
 
