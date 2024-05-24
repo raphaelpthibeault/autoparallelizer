@@ -18,6 +18,7 @@ add_executable(${PROJECT_NAME}
     parallelizer/parallelizer.cpp
     visitors/global_visitor.cpp
     visitors/variable_visitor.cpp
+    visitors/function_visitor.cpp
     util/util.cpp
     main.cpp
 )

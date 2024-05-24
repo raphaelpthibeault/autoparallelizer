@@ -38,5 +38,16 @@ public:
     virtual antlrcpp::Any visitPrimaryExpression(CParser::PrimaryExpressionContext *ctx) override;
 };
 
+class FunctionVisitor : public CBaseVisitor {
+public:
+    Program &program;
+
+    FunctionVisitor(Program &program);
+    ~FunctionVisitor();
+
+    virtual antlrcpp::Any visitFunctionDefinition(CParser::FunctionDefinitionContext *ctx) override;
+
+};
+
 
 #endif // __VISITORS_HPP

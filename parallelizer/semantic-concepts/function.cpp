@@ -1,10 +1,13 @@
 #include "concepts.hpp"
+#include "util.hpp"
 #include <iterator>
+#include <utility>
 #include <vector>
 
+/* PUBLIC */
+
 Function::Function(const std::string &id, CParser::CompoundStatementContext *body_ctx, antlr4::ParserRuleContext *function_ctx)
-    : id(id), body_ctx(body_ctx), function_ctx(function_ctx){
-    }
+    : id(id), body_ctx(body_ctx), function_ctx(function_ctx){}
 
 Function::Function(const std::string &id) : Function(id, nullptr, nullptr) {}
 
@@ -143,7 +146,139 @@ Function::get_virtual_name(CParser::PostfixExpressionContext *ctx) {
 }
 
 
+std::string
+Function::parallelize(bool reduction_operation) const {
+    /* TODO */
+    return "";
+}
 
+void
+Function::parallelize_reduction(StatBlock &block, const std::map<std::string, std::vector<std::string>> &reduction, std::stringstream &parallelized, int tabs) const {
+    /* TODO */
+}
+
+
+bool
+Function::check_assignment(CParser::AssignmentExpressionContext *assign, std::map<std::string, std::string> &reduction_vars) const {
+    if (assign->unaryExpression()->postfixExpression()->primaryExpression()->Identifier() != nullptr) {
+            std::string left = assign->unaryExpression()->postfixExpression()->primaryExpression()->Identifier()->getText();
+
+            if (reduction_vars.count(left)) {
+                return false;
+            }
+
+            if (assign->assignmentOperator()->getText() != "=") {
+                return false;
+            }
+
+            std::string op = assign->assignmentOperator()->getText();
+            std::string code = get_text(assign->assignmentExpression());
+            auto analyzed = analyze(code);
+
+            if (analyzed.second != 0) {
+                return false;
+            }
+
+            const auto &right = analyzed.first;
+            int occurrences = 0;
+            for (const auto &id : right) {
+                if (reduction_vars.count(id)) {
+                    reduction_vars.erase(id);
+                }
+                if (id == left) {
+                    ++occurrences;
+                }
+            }
+
+            if (op == "=") {
+                if (occurrences != 1) {
+                    return false;
+                }
+                if (assign->assignmentExpression() != nullptr) {
+                    return check_min_max(left, assign->assignmentExpression(), reduction_vars);
+                } else {
+                    // TODO: support direct assignments
+                    return false;
+                }
+            }
+
+            if (op.find_first_of("+=-=*=/=|=&=^=") != std::string::npos && occurrences != 0) {
+                return false;
+            }
+
+            reduction_vars[left] = op.substr(0, op.size() - 1);
+        }
+
+        return true;}
+
+
+bool
+Function::check_min_max(const std::string &left, CParser::AssignmentExpressionContext *expr2, std::map<std::string, std::string> &reduction_vars) const {
+    return true;
+}
+
+std::map<std::string, std::vector<std::string>>
+Function:: check_reduction(CParser::CompoundStatementContext *ctx) const {
+    std::map<std::string, std::string> reduction_vars;
+
+    if (ctx->blockItemList() != nullptr) {
+        for (auto *inst : ctx->blockItemList()->blockItem()) {
+            if (inst->statement() != nullptr && inst->statement()->expressionStatement() != nullptr) {
+                for (auto *assign : inst->statement()->expressionStatement()->expression()->assignmentExpression()) {
+                    if (!check_assignment(assign, reduction_vars)) {
+                        return {};
+                    }
+                }
+            }
+        }
+    }
+
+    std::map<std::string, std::vector<std::string>> reduction_ops;
+    for (const auto &[id, op] : reduction_vars) {
+        reduction_ops[op].push_back(id);
+    }
+
+    return reduction_ops;
+}
+
+std::pair<std::vector<std::string>, int>
+Function::analyze(const std::string& text) {
+    std::unordered_set<char> special_chars = {'=', '!', '<', '>', '+', '-', '*', '/', '%', '&', '|', '^', '~', '(', '[', ']', ')', '\'', '"', '{', '}', '#', ',', ' '};
+    std::vector<std::string> variables;
+    int type = 0;
+
+    std::string current;
+    for (char c : text) {
+        if (c == '(') {
+            current.clear();
+        } else if (c == '[') {
+            if (!current.empty()) {
+                variables.push_back(current);
+            }
+            current.clear();
+        }
+
+        if (special_chars.find(c) == special_chars.end()) {
+            if (isdigit(c) && current.empty()) {
+                continue;
+            }
+            current += c;
+        } else {
+            if (!current.empty()) {
+                variables.push_back(current);
+                current.clear();
+            }
+        }
+    }
+
+    if (!current.empty()) {
+        variables.push_back(current);
+    }
+
+    return std::make_pair(variables, type);
+}
+
+/* PRIVATE */
 
 void
 Function::find_disconnected_components(StatBlock block, std::set<StatBlock> &visited, std::vector<std::pair<StatBlock, int>> &topsort, int curr_cc) {
