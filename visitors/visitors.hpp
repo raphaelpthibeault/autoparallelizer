@@ -49,5 +49,20 @@ public:
 
 };
 
+class CallGraphVisitor : public CBaseVisitor {
+private:
+    std::string curr_parent;
+
+public:
+    Program &program;
+
+
+    CallGraphVisitor(Program &program);
+    ~CallGraphVisitor();
+
+    virtual antlrcpp::Any visitFunctionDefinition(CParser::FunctionDefinitionContext *ctx) override;
+    virtual antlrcpp::Any visitPostfixExpression(CParser::PostfixExpressionContext *ctx) override;
+};
+
 
 #endif // __VISITORS_HPP

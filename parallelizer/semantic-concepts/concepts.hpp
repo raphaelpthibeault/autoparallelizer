@@ -69,9 +69,15 @@ public:
     bool check_min_max(const std::string &left, CParser::AssignmentExpressionContext *expr2, std::map<std::string, std::string> &reduction_vars) const;
     std::map<std::string, std::vector<std::string>> check_reduction(CParser::CompoundStatementContext *ctx) const;
     static std::pair<std::vector<std::string>, int> analyze(const std::string& text);
+    std::string to_string() const;
 
     bool operator<(const Function& other) const {
         return id < other.id;
+    }
+
+    // C doesn't allow function overloads so this is fine
+    bool operator==(const Function& other) const {
+        return id == other.id;
     }
 
 private:
@@ -93,6 +99,10 @@ public:
     Program(const Program&) = delete;
     Program& operator=(const Program&) = delete;
     void add(const std::string& new_code);
+    void print_defined_functions() const;
+    void print_call_graph() const;
+    bool is_defined_function(std::string id) const;
+    bool is_caller_function(std::string id) const;
 };
 
 

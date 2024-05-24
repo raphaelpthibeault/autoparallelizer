@@ -19,6 +19,7 @@ add_executable(${PROJECT_NAME}
     visitors/global_visitor.cpp
     visitors/variable_visitor.cpp
     visitors/function_visitor.cpp
+    visitors/callgraph_visitor.cpp
     util/util.cpp
     main.cpp
 )

@@ -1,6 +1,7 @@
 #include "concepts.hpp"
 #include "util.hpp"
 #include <iterator>
+#include <sstream>
 #include <utility>
 #include <vector>
 
@@ -121,10 +122,13 @@ std::string
 Function::get_virtual_name(CParser::FunctionDefinitionContext *ctx) {
     std::stringstream name;
 
-    name << ctx->declarator()->directDeclarator()->getText();
+    //name << ctx->declarator()->directDeclarator()->getText();
+    name << ctx->declarator()->directDeclarator()->directDeclarator()->getText();
 
     if (ctx->declarator()->directDeclarator()->parameterTypeList() != nullptr) {
         name << "-" << ctx->declarator()->directDeclarator()->parameterTypeList()->parameterList()->parameterDeclaration().size();
+    } else {
+        name << "-0";
     }
 
     return name.str();
@@ -133,14 +137,19 @@ Function::get_virtual_name(CParser::FunctionDefinitionContext *ctx) {
 std::string
 Function::get_virtual_name(CParser::PostfixExpressionContext *ctx) {
     std::stringstream name;
-
+    /*
     if (!ctx->Identifier().empty()) {
         name << ctx->Identifier(0)->getText();
-    }
+    }*/
 
+    if (ctx->primaryExpression()->Identifier() != nullptr) {
+        name << ctx->primaryExpression()->Identifier()->getText();
+    }
+    /*
     if (!ctx->argumentExpressionList().empty()) {
         name << "-" << ctx->argumentExpressionList().size();
-    }
+    }*/
+    name << "-" << ctx->argumentExpressionList().size();
 
     return name.str();
 }
@@ -276,6 +285,13 @@ Function::analyze(const std::string& text) {
     }
 
     return std::make_pair(variables, type);
+}
+
+std::string
+Function::to_string() const {
+    std::stringstream ss;
+    ss << "Function ID: " << id << "\n";
+    return ss.str();
 }
 
 /* PRIVATE */
