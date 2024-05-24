@@ -283,15 +283,14 @@ Function::analyze(const std::string& text) {
 void
 Function::find_disconnected_components(StatBlock block, std::set<StatBlock> &visited, std::vector<std::pair<StatBlock, int>> &topsort, int curr_cc) {
     visited.insert(block);
-    const auto &neighbors = dependency_graph[block];
 
-    for (const auto &neighbor : neighbors) {
+    for (const auto &neighbor : dependency_graph[block]) {
         if (!visited.count(neighbor)) {
             find_disconnected_components(neighbor, visited, topsort, curr_cc);
         }
     }
 
-    topsort.emplace(topsort.begin(), curr_cc);
+    topsort.emplace_back(block, curr_cc);
 }
 
 bool
