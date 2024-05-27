@@ -17,20 +17,19 @@
 
 class StatBlock {
 public:
-    std::list<CParser::StatementContext *> statements;
+    std::list<CParser::BlockItemContext *> instructions;
     std::set<std::string> vars_alive, vars_dead;
     int id;
 
     StatBlock(int id);
     ~StatBlock();
 
-    void add_statement(CParser::StatementContext *ctx);
+    void add_instruction(CParser::BlockItemContext *ctx);
     void get_vars_control_struct(CParser::StatementContext *ctx);
     void get_vars_control_struct_body(CParser::CompoundStatementContext *ctx);
-    void get_vars_for_loop(CParser::IterationStatementContext *ctx);
+    void get_vars_iters(CParser::IterationStatementContext *ctx);
     void get_vars();
-    void get_vars(std::list<CParser::StatementContext *> ctxs);
-    bool is_scope(CParser::StatementContext *ctx) const;
+    void get_vars(std::list<CParser::BlockItemContext *> ctxs);
     std::string to_string() const;
     std::string get_txt(int tabs) const;
 
@@ -45,7 +44,7 @@ public:
     std::vector<StatBlock> flow_graph;
     std::map<StatBlock, std::set<StatBlock>> dependency_graph;
     std::vector<std::pair<StatBlock, int>> blocks_order;
-    std::unique_ptr<StatBlock> decl_block;
+    //std::unique_ptr<StatBlock> decl_block;
     std::unique_ptr<StatBlock> ret_block;
     std::string id;
     CParser::CompoundStatementContext *body_ctx;
@@ -56,9 +55,9 @@ public:
     Function(const std::string &id);
     ~Function();
     void build_flow_graph();
-    void print_flow_graph() const;
+    void print_flow_graph();
     void build_dependency_graph();
-    void print_dependency_graph() const;
+    void print_dependency_graph();
     void find_dependencies();
     void find_disconnected_components();
     static std::string get_virtual_name(CParser::FunctionDefinitionContext *ctx);
@@ -68,7 +67,7 @@ public:
     bool check_assignment(CParser::AssignmentExpressionContext *assign, std::map<std::string, std::string> &reduction_vars) const;
     bool check_min_max(const std::string &left, CParser::AssignmentExpressionContext *expr2, std::map<std::string, std::string> &reduction_vars) const;
     std::map<std::string, std::vector<std::string>> check_reduction(CParser::CompoundStatementContext *ctx) const;
-    static std::pair<std::vector<std::string>, int> analyze(const std::string& text);
+    static std::vector<std::string> analyze(const std::string& text);
     std::string to_string() const;
 
     bool operator<(const Function& other) const {

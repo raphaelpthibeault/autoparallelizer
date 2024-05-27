@@ -1,5 +1,3 @@
-#include "support/Any.h"
-#include "tree/TerminalNode.h"
 #include "util.hpp"
 #include "visitors.hpp"
 
@@ -25,6 +23,17 @@ VariableVisitor::VariableVisitor(CParser::ForExpressionContext *ctx, std::set<st
     : VariableVisitor(vars_alive, vars_dead) {
     visitChildren(ctx);
 }
+
+VariableVisitor::VariableVisitor(CParser::ForDeclarationContext *ctx, std::set<std::string> &vars_alive, std::set<std::string> &vars_dead)
+    : VariableVisitor(vars_alive, vars_dead) {
+        visitChildren(ctx);
+    }
+
+VariableVisitor::VariableVisitor(CParser::BlockItemContext *ctx, std::set<std::string> &vars_alive, std::set<std::string> &vars_dead)
+    : VariableVisitor(vars_alive, vars_dead) {
+        visitChildren(ctx);
+    }
+
 VariableVisitor::~VariableVisitor() {}
 
 antlrcpp::Any
@@ -34,14 +43,15 @@ VariableVisitor::visitDeclaration(CParser::DeclarationContext *ctx) {
 
 antlrcpp::Any
 VariableVisitor::visitAssignmentExpression(CParser::AssignmentExpressionContext *ctx) {
+    // for expressions not under the ExpressionContext e.g. returns
     analyze_expression(Function::analyze(get_text(ctx)));
     return visitChildren(ctx);
 }
 
 antlrcpp::Any
 VariableVisitor::visitPostfixExpression(CParser::PostfixExpressionContext *ctx) {
-    for (auto terminalNode : ctx->Identifier()) {
-        std::string id = terminalNode->getText();
+    for (auto terminal_node : ctx->Identifier()) {
+        std::string id = terminal_node->getText();
         if (ctx->children.size() > 1 && ctx->children[1]->getText() == "=") {
             vars_alive.erase(id);
             vars_dead.insert(id);
@@ -65,24 +75,25 @@ antlrcpp::Any
 VariableVisitor::visitPrimaryExpression(CParser::PrimaryExpressionContext *ctx) {
     antlr4::tree::TerminalNode *id = ctx->Identifier();
     if (id) {
+        bool is_func = false;
+        if (ctx->parent != nullptr) {
+            for (auto child : ctx->parent->children) {
+                if (child->getText() == "(" || child->getText() == ")") {
+                    is_func = true;
+                }
+            }
+        }
+
+        if (!is_func) {
             vars_alive.insert(id->getText());
+        }
     }
     return visitChildren(ctx);
 }
 
 void
-VariableVisitor::analyze_expression(std::pair<std::vector<std::string>, int> pair) {
-    std::vector<std::string> var = pair.first;
-    int type = pair.second;
-
-    if (type == 0 || type == 2) {
-        for (const auto &id : var) {
-            vars_alive.insert(id);
-        }
-    } else if (type == 1) {
-        for (const auto &id : var) {
-            vars_alive.erase(id);
-            vars_dead.insert(id);
-        }
+VariableVisitor::analyze_expression(std::vector<std::string> var) {
+    for (const auto &id : var) {
+        vars_alive.insert(id);
     }
 }

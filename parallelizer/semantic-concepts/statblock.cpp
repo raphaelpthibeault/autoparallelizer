@@ -7,23 +7,23 @@ StatBlock::StatBlock(int id) : id(id) {}
 StatBlock::~StatBlock() {}
 
 void
-StatBlock::add_statement(CParser::StatementContext *ctx) {
-    statements.push_back(ctx);
+StatBlock::add_instruction(CParser::BlockItemContext *ctx) {
+    instructions.push_back(ctx);
 }
 
 void
 StatBlock::get_vars_control_struct(CParser::StatementContext *ctx) {
     if (ctx->iterationStatement() != nullptr) {
-        get_vars_for_loop(ctx->iterationStatement());
+        get_vars_iters(ctx->iterationStatement());
     } else if (ctx->compoundStatement() != nullptr) {
         if (ctx->compoundStatement()->blockItemList() != nullptr) {
-            std::list<CParser::StatementContext *> stat_ls;
+            std::list<CParser::BlockItemContext *> instr_ls;
             for (auto item : ctx->compoundStatement()->blockItemList()->blockItem()) {
-                if (item->statement() != nullptr) {
-                    stat_ls.push_back(item->statement());
+                if (item->statement() != nullptr || item->declaration() != nullptr) {
+                    instr_ls.push_back(item);
                 }
             }
-            get_vars(stat_ls);
+            get_vars(instr_ls);
         }
     } else if (ctx->selectionStatement() != nullptr) {
         if (ctx->selectionStatement()->expression() != nullptr) {
@@ -39,22 +39,24 @@ StatBlock::get_vars_control_struct(CParser::StatementContext *ctx) {
 void
 StatBlock::get_vars_control_struct_body(CParser::CompoundStatementContext *ctx) {
     if (ctx->blockItemList() != nullptr) {
-        std::list<CParser::StatementContext *> stat_ls;
+        std::list<CParser::BlockItemContext *> instr_ls;
         for (auto itm : ctx->blockItemList()->blockItem()) {
-            if (itm->statement() != nullptr) {
-                stat_ls.push_back(itm->statement());
+            if (itm->statement() != nullptr || itm->declaration() != nullptr) {
+                instr_ls.push_back(itm);
             }
         }
 
-        get_vars(stat_ls);
+        get_vars(instr_ls);
     }
 }
 
 void
-StatBlock::get_vars_for_loop(CParser::IterationStatementContext *ctx) {
+StatBlock::get_vars_iters(CParser::IterationStatementContext *ctx) {
     if (ctx->For() != nullptr) {
         if (ctx->forCondition()->expression() != nullptr) {
             new VariableVisitor(ctx->forCondition()->expression(), vars_alive, vars_dead);
+        } else if (ctx->forCondition()->forDeclaration() != nullptr) {
+            new VariableVisitor(ctx->forCondition()->forDeclaration(), vars_alive, vars_dead);
         }
 
         get_vars_control_struct_body(ctx->statement()->compoundStatement());
@@ -74,40 +76,34 @@ void
 StatBlock::get_vars() {
     vars_alive.clear();
     vars_dead.clear();
-    get_vars(statements);
+    get_vars(instructions);
 }
 
 void
-StatBlock::get_vars(std::list<CParser::StatementContext *> ctxs) {
+StatBlock::get_vars(std::list<CParser::BlockItemContext *> ctxs) {
     if (ctxs.empty()) return;
 
     for (auto it = ctxs.rbegin(); it != ctxs.rend(); ++it) {
-        CParser::StatementContext *next = *it;
-        if (is_scope(next)) {
-            get_vars_control_struct(next);
-        } else if (next->expressionStatement() != nullptr && next->expressionStatement()->expression() != nullptr) {
-            new VariableVisitor(next->expressionStatement()->expression(), vars_alive, vars_dead);
+        CParser::BlockItemContext *next = *it;
+        if (is_scope2(next)) {
+            get_vars_control_struct(next->statement());
+        } else if (next->statement() != nullptr && next->statement()->expressionStatement() != nullptr && next->statement()->expressionStatement()->expression() != nullptr) {
+            new VariableVisitor(next->statement()->expressionStatement()->expression(), vars_alive, vars_dead);
         } else {
             new VariableVisitor(next, vars_alive, vars_dead);
         }
     }
 }
 
-bool
-StatBlock::is_scope(CParser::StatementContext *ctx) const {
-    return ctx->iterationStatement() != nullptr || ctx->compoundStatement() != nullptr
-        || ctx->selectionStatement() != nullptr;
-}
-
 std::string
 StatBlock::to_string() const {
     std::stringstream builder;
-    builder << "Block #" << id << "\nStatements:\n";
-    builder << "..........................................\n";
-    for (auto stat : statements) {
-        builder << get_text(stat) << "\n\n";
+    builder << "Block #" << id << "\nInstructions:\n";
+    builder << "..................\n";
+    for (auto inst : instructions) {
+        builder << get_text(inst) << "\n";
     }
-    builder << "..........................................\n";
+    builder << "..................\n";
     builder << "Alive variables [ ";
     for (const auto &alive : vars_alive) {
         builder << alive << " ";
@@ -125,7 +121,7 @@ std::string
 StatBlock::get_txt(int tabs) const {
     std::string prefix(tabs, '\t');
     std::stringstream builder;
-    for (auto stat : statements) {
+    for (auto stat : instructions) {
         std::string text = get_text(stat);
         builder << prefix << text << "\n";
     }

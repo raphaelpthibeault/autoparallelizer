@@ -4,7 +4,7 @@
 #include <stdexcept>
 
 std::string
-get_text(antlr4::ParserRuleContext *ctx) {
+get_text(const antlr4::ParserRuleContext *ctx) {
     size_t start = ctx->start->getStartIndex();
     size_t stop = ctx->stop->getStopIndex();
     antlr4::misc::Interval interval(start, stop);
@@ -22,4 +22,20 @@ print_to_file(const std::string &f_name, const std::string &content) {
 
     out << content;
     out.close();
+}
+
+bool
+is_scope2(CParser::BlockItemContext *ctx) {
+    return ctx->statement() != nullptr &&
+            (ctx->statement()->iterationStatement() != nullptr ||
+             ctx->statement()->compoundStatement() != nullptr ||
+             ctx->statement()->selectionStatement() != nullptr);
+}
+
+bool
+is_scope2(CParser::StatementContext *ctx) {
+    return ctx != nullptr &&
+            (ctx->iterationStatement() != nullptr ||
+             ctx->compoundStatement() != nullptr ||
+             ctx->selectionStatement() != nullptr);
 }

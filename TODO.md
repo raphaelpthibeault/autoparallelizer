@@ -1,0 +1,2 @@
+- move analyze to util, call it return_candidate_variables(std::string);
+- fix dead variables (especially in the case of struct inners)

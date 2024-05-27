@@ -1,3 +1,4 @@
+#include "CParser.h"
 #include "concepts.hpp"
 #include "util.hpp"
 #include <iterator>
@@ -22,50 +23,51 @@ Function::build_flow_graph() {
 
     StatBlock curr(index++);
 
-    std::cout << body_ctx->blockItemList()->getText() << "\n";
-
     for (auto *inst : body_ctx->blockItemList()->blockItem()) {
-        if (is_scope(inst->statement())) {
-            flow_graph.push_back(curr);
-            if (curr.statements.empty()) {
-                curr.add_statement(inst->statement());
+        if (is_scope2(inst)) {
+            if (curr.instructions.empty()) {
+                curr.add_instruction(inst);
+                flow_graph.push_back(curr);
             } else {
-                StatBlock controlBlock(index++);
-                controlBlock.add_statement(inst->statement());
-                flow_graph.push_back(controlBlock);
+                flow_graph.push_back(curr);
+                StatBlock ctrl_block(index++);
+                ctrl_block.add_instruction(inst);
+                flow_graph.push_back(ctrl_block);
             }
+
             curr = StatBlock(index++);
-        } else if (inst->statement()->jumpStatement() != nullptr && inst->statement()->jumpStatement()->Return() != nullptr) {
+        } else if (inst->statement() != nullptr && inst->statement()->jumpStatement() != nullptr && inst->statement()->jumpStatement()->Return() != nullptr) {
             ret_block = std::make_unique<StatBlock>(index++);
-            ret_block->add_statement(inst->statement());
+            ret_block->add_instruction(inst);
         } else if (inst->declaration() != nullptr) {
-            if (!decl_block) {
-                decl_block = std::make_unique<StatBlock>(0);
-            }
-            decl_block->add_statement(inst->statement());
+            /* declarations (and declaration + assignment in one step) */
+            /* what if I keep the decl_block just for the declarations e.g. 'int x;' */
+            curr.add_instruction(inst);
         } else {
-            curr.add_statement(inst->statement());
+            /* function calls and assignments */
+            curr.add_instruction(inst);
         }
     }
 
-    if (!curr.statements.empty()) {
+    if (!curr.instructions.empty()) {
         flow_graph.push_back(curr);
     }
 }
 
 void
-Function::print_flow_graph() const {
-   for (const auto &block : flow_graph) {
-       std::cout << block.to_string() << "\n";
+Function::print_flow_graph() {
+    for (const auto &block : flow_graph) {
+       std::cout << id << " " << block.to_string() << "\n";
    }
+   std::cout << "\n";
 }
 
 void
 Function::build_dependency_graph() {
     if (flow_graph.empty()) return;
     int i, j;
-
     std::vector<StatBlock> blocks;
+
     for (const auto &block : flow_graph) {
         dependency_graph[block] = std::set<StatBlock>();
         blocks.push_back(block);
@@ -91,7 +93,7 @@ Function::build_dependency_graph() {
 }
 
 void
-Function::print_dependency_graph() const {
+Function::print_dependency_graph() {
     for (const auto &[block, neighbors] : dependency_graph) {
         std::cout << block.id << " -> ";
         for (const auto &neighbor : neighbors) {
@@ -125,7 +127,6 @@ std::string
 Function::get_virtual_name(CParser::FunctionDefinitionContext *ctx) {
     std::stringstream name;
 
-    //name << ctx->declarator()->directDeclarator()->getText();
     name << ctx->declarator()->directDeclarator()->directDeclarator()->getText();
 
     if (ctx->declarator()->directDeclarator()->parameterTypeList() != nullptr) {
@@ -140,18 +141,10 @@ Function::get_virtual_name(CParser::FunctionDefinitionContext *ctx) {
 std::string
 Function::get_virtual_name(CParser::PostfixExpressionContext *ctx) {
     std::stringstream name;
-    /*
-    if (!ctx->Identifier().empty()) {
-        name << ctx->Identifier(0)->getText();
-    }*/
 
     if (ctx->primaryExpression()->Identifier() != nullptr) {
         name << ctx->primaryExpression()->Identifier()->getText();
     }
-    /*
-    if (!ctx->argumentExpressionList().empty()) {
-        name << "-" << ctx->argumentExpressionList().size();
-    }*/
     name << "-" << ctx->argumentExpressionList().size();
 
     return name.str();
@@ -187,13 +180,8 @@ Function::check_assignment(CParser::AssignmentExpressionContext *assign, std::ma
             std::string code = get_text(assign->assignmentExpression());
             auto analyzed = analyze(code);
 
-            if (analyzed.second != 0) {
-                return false;
-            }
-
-            const auto &right = analyzed.first;
             int occurrences = 0;
-            for (const auto &id : right) {
+            for (const auto &id : analyzed) {
                 if (reduction_vars.count(id)) {
                     reduction_vars.erase(id);
                 }
@@ -226,6 +214,7 @@ Function::check_assignment(CParser::AssignmentExpressionContext *assign, std::ma
 
 bool
 Function::check_min_max(const std::string &left, CParser::AssignmentExpressionContext *expr2, std::map<std::string, std::string> &reduction_vars) const {
+    /* TODO */
     return true;
 }
 
@@ -253,41 +242,65 @@ Function:: check_reduction(CParser::CompoundStatementContext *ctx) const {
     return reduction_ops;
 }
 
-std::pair<std::vector<std::string>, int>
+const std::unordered_set<std::string> c_keywords = {
+    "auto", "break", "case", "char", "const", "continue", "default", "do", "double",
+    "else", "enum", "extern", "float", "for", "goto", "if", "int", "long", "register",
+    "return", "short", "signed", "sizeof", "static", "struct", "switch", "typedef",
+    "union", "unsigned", "void", "volatile", "while", "_Bool", "_Complex", "_Imaginary"
+};
+
+const std::unordered_set<char> special_chars = {'=', '!', '<', '>', '+', '-', '*', '/', '%', '&', '|', '^', '~', '(', '[', ']', ')', '\'', '"', '{', '}', '#', ',', ' '};
+
+std::vector<std::string>
 Function::analyze(const std::string& text) {
-    std::unordered_set<char> special_chars = {'=', '!', '<', '>', '+', '-', '*', '/', '%', '&', '|', '^', '~', '(', '[', ']', ')', '\'', '"', '{', '}', '#', ',', ' '};
     std::vector<std::string> variables;
-    int type = 0;
+    bool skip = false;
+
+   // std::cout << "ANALYZING TEXT: " << text;
 
     std::string current;
     for (char c : text) {
+        if (c == '"')
+            skip = !skip;
+
+        if (skip)
+            continue;
+
         if (c == '(') {
             current.clear();
         } else if (c == '[') {
-            if (!current.empty()) {
+             if (!current.empty()) {
                 variables.push_back(current);
             }
             current.clear();
-        }
-
-        if (special_chars.find(c) == special_chars.end()) {
+        } else if (special_chars.find(c) == special_chars.end()) {
             if (isdigit(c) && current.empty()) {
                 continue;
             }
             current += c;
-        } else {
-            if (!current.empty()) {
-                variables.push_back(current);
-                current.clear();
-            }
+        } else if (!current.empty() && c_keywords.find(current) == c_keywords.end()) {
+            variables.push_back(current);
+            current.clear();
+        } else if (!current.empty()) {
+            current.clear();
         }
     }
 
-    if (!current.empty()) {
+    if (!current.empty() && current != "\n") {
+        if (current.back() == '\n') {
+            current.pop_back();
+        }
+
         variables.push_back(current);
     }
-
-    return std::make_pair(variables, type);
+/*
+    std::cout << "GAVE THESE VARIABLES: ";
+    for (auto var : variables) {
+        std::cout << var << " ";
+    }
+    std::cout << "\n";
+*/
+    return variables;
 }
 
 std::string

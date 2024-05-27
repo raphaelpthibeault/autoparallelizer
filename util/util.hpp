@@ -3,8 +3,11 @@
 
 #include <string>
 #include <antlr4-runtime.h>
+#include <CParser.h>
 
-std::string get_text(antlr4::ParserRuleContext *);
+std::string get_text(const antlr4::ParserRuleContext *);
 void print_to_file(const std::string &, const std::string &);
+bool is_scope2(CParser::BlockItemContext * ctx);
+bool is_scope2(CParser::StatementContext * ctx);
 
 #endif // __UTIL_HPP
