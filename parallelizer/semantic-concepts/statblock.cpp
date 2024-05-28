@@ -27,7 +27,7 @@ StatBlock::get_vars_control_struct(CParser::StatementContext *ctx) {
         }
     } else if (ctx->selectionStatement() != nullptr) {
         if (ctx->selectionStatement()->expression() != nullptr) {
-            new VariableVisitor(ctx->selectionStatement()->expression(), vars_alive, vars_dead);
+            //new VariableVisitor(ctx->selectionStatement()->expression(), vars_alive, vars_dead);
         }
         get_vars_control_struct_body(ctx->selectionStatement()->statement(0)->compoundStatement());
         if (ctx->selectionStatement()->Else() != nullptr) {
@@ -54,20 +54,20 @@ void
 StatBlock::get_vars_iters(CParser::IterationStatementContext *ctx) {
     if (ctx->For() != nullptr) {
         if (ctx->forCondition()->expression() != nullptr) {
-            new VariableVisitor(ctx->forCondition()->expression(), vars_alive, vars_dead);
+            //new VariableVisitor(ctx->forCondition()->expression(), vars_alive, vars_dead);
         } else if (ctx->forCondition()->forDeclaration() != nullptr) {
-            new VariableVisitor(ctx->forCondition()->forDeclaration(), vars_alive, vars_dead);
+            //new VariableVisitor(ctx->forCondition()->forDeclaration(), vars_alive, vars_dead);
         }
 
         get_vars_control_struct_body(ctx->statement()->compoundStatement());
 
         for (auto expr : ctx->forCondition()->forExpression()) {
-            new VariableVisitor(expr, vars_alive, vars_dead);
+            //new VariableVisitor(expr, vars_alive, vars_dead);
         }
     } else if (ctx->While() != nullptr || ctx->Do() != nullptr) {
         get_vars_control_struct_body(ctx->statement()->compoundStatement());
         if (ctx->expression() != nullptr) {
-            new VariableVisitor(ctx->expression(), vars_alive, vars_dead);
+            //new VariableVisitor(ctx->expression(), vars_alive, vars_dead);
         }
     }
 }
@@ -88,9 +88,9 @@ StatBlock::get_vars(std::list<CParser::BlockItemContext *> ctxs) {
         if (is_scope2(next)) {
             get_vars_control_struct(next->statement());
         } else if (next->statement() != nullptr && next->statement()->expressionStatement() != nullptr && next->statement()->expressionStatement()->expression() != nullptr) {
-            new VariableVisitor(next->statement()->expressionStatement()->expression(), vars_alive, vars_dead);
+            //new VariableVisitor(next->statement()->expressionStatement()->expression(), vars_alive, vars_dead);
         } else {
-            new VariableVisitor(next, vars_alive, vars_dead);
+            //new VariableVisitor(next, vars_alive, vars_dead);
         }
     }
 }

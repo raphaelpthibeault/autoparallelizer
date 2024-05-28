@@ -38,6 +38,8 @@ public:
     virtual antlrcpp::Any visitPostfixExpression(CParser::PostfixExpressionContext *ctx) override;
     virtual antlrcpp::Any visitExpression(CParser::ExpressionContext *ctx) override;
     virtual antlrcpp::Any visitPrimaryExpression(CParser::PrimaryExpressionContext *ctx) override;
+    virtual antlrcpp::Any visitUnaryExpression(CParser::UnaryExpressionContext *ctx) override;
+    virtual antlrcpp::Any visitCastExpression(CParser::CastExpressionContext *ctx) override;
 };
 
 class FunctionVisitor : public CBaseVisitor {

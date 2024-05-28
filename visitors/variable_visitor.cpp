@@ -1,3 +1,4 @@
+#include "support/Any.h"
 #include "util.hpp"
 #include "visitors.hpp"
 
@@ -38,33 +39,43 @@ VariableVisitor::~VariableVisitor() {}
 
 antlrcpp::Any
 VariableVisitor::visitDeclaration(CParser::DeclarationContext *ctx) {
+    // a full declaration
+    // variables (the ones not being declared) are being observed
+    // e.g. int x = y; int x = function(y); int arr[x][y];
+
+    //std::cout << ctx->getText() << "\n";
     return visitChildren(ctx);
 }
 
 antlrcpp::Any
 VariableVisitor::visitAssignmentExpression(CParser::AssignmentExpressionContext *ctx) {
-    // for expressions not under the ExpressionContext e.g. returns
+    // is the rhs
+    std::cout << ctx->getText() << "\n";
+    //std::cout << ctx->parent->getText() << "\n";
+
     analyze_expression(Function::analyze(get_text(ctx)));
+
     return visitChildren(ctx);
 }
 
 antlrcpp::Any
 VariableVisitor::visitPostfixExpression(CParser::PostfixExpressionContext *ctx) {
-    for (auto terminal_node : ctx->Identifier()) {
+    /* visit constructs like id[expr] or id->id */
+    /* or func() */
+
+    // is this lhs or rhs?
+
+    for (auto terminal_node : ctx->Identifier()) { // id->id
         std::string id = terminal_node->getText();
-        if (ctx->children.size() > 1 && ctx->children[1]->getText() == "=") {
-            vars_alive.erase(id);
-            vars_dead.insert(id);
-        } else {
-            vars_alive.insert(id);
-            vars_dead.insert(id);
-        }
+        vars_alive.insert(id);
     }
+
     return visitChildren(ctx);
 }
 
 antlrcpp::Any
 VariableVisitor::visitExpression(CParser::ExpressionContext *ctx) {
+    /* an expression, so obviously all the values are observed and therefore live */
     for (auto assignmentExprCtx : ctx->assignmentExpression()) {
         analyze_expression(Function::analyze(get_text(assignmentExprCtx)));
     }
@@ -73,6 +84,9 @@ VariableVisitor::visitExpression(CParser::ExpressionContext *ctx) {
 
 antlrcpp::Any
 VariableVisitor::visitPrimaryExpression(CParser::PrimaryExpressionContext *ctx) {
+    // has some of the rhs
+    //std::cout << ctx->getText() << "\n";
+
     antlr4::tree::TerminalNode *id = ctx->Identifier();
     if (id) {
         bool is_func = false;
@@ -86,10 +100,29 @@ VariableVisitor::visitPrimaryExpression(CParser::PrimaryExpressionContext *ctx) 
 
         if (!is_func) {
             vars_alive.insert(id->getText());
+        } else {
+            // is it an equals or not
+            //std::cout << "func: " << id->getText() << " parent context: " << ctx->parent->getText() << "\n";
         }
     }
     return visitChildren(ctx);
 }
+
+antlrcpp::Any
+VariableVisitor::visitUnaryExpression(CParser::UnaryExpressionContext *ctx) {
+    //std::cout << ctx->getText() << "\n";
+
+    return visitChildren(ctx);
+}
+
+antlrcpp::Any
+VariableVisitor::visitCastExpression(CParser::CastExpressionContext *ctx) {
+    // sizeof(var) ???
+    //std::cout << ctx->getText() << "\n";
+
+    return visitChildren(ctx);
+}
+
 
 void
 VariableVisitor::analyze_expression(std::vector<std::string> var) {

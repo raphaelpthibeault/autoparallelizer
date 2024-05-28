@@ -122,10 +122,8 @@ parallelize(CParser &parser) {
     }
 
     for (auto func : function_order) {
-        func->print_flow_graph();
+       func->print_flow_graph();
     }
-
-
 
     //std::cout << "----- !find dependencies -----\n";
 /*
