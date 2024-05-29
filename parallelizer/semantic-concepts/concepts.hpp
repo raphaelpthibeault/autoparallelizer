@@ -19,6 +19,9 @@ class StatBlock {
 public:
     std::list<CParser::BlockItemContext *> instructions;
     std::set<std::string> vars_alive, vars_dead;
+    std::set<std::string> def_b, use_b;
+    std::set<std::string> in_b, out_b;
+
     int id;
 
     StatBlock(int id);

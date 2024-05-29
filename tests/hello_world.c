@@ -18,8 +18,10 @@ spam() {
     a = 5;
 
     if (a < 5) {
+        int if_statement_var = 123;
         printf("a is less than 5\n");
     } else {
+        int else_statement_var = 456;
         printf("a is not less than 5\n");
     }
 
@@ -47,6 +49,8 @@ spam() {
         }
     }
     printf("\n");
+    int arr2[100][2];
+    int arr3[a][b][c];
 
     for (int k = 0; k < 100; ++k) {
         int a1 = 1;
@@ -54,6 +58,10 @@ spam() {
         int a3 = 3;
         int sum = a1 + a2 + a3;
         printf("%d\n", sum);
+
+        arr2[k][0] = sum;
+        arr2[k][a1] = a2;
+        arr2[k][a1 * a2 * a3];
     }
 
     a = 0;
@@ -68,9 +76,14 @@ return_10() {
     return 10;
 }
 
+int
+return_in(int in) {
+    return in;
+}
+
 int ham() {
     struct structA *a = (struct structA*)malloc(sizeof(struct structA));
-    char * str = (char *)malloc(10 * sizeof(char));
+    char *str = (char *)malloc(10 * sizeof(char));
 
     a->z = 10;
     a->zz = 20;
@@ -87,5 +100,6 @@ main() {
     spam();
     ham();
     int x = return_10();
+    int y = return_in(x);
     return 0;
 }

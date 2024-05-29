@@ -249,7 +249,7 @@ const std::unordered_set<std::string> c_keywords = {
     "union", "unsigned", "void", "volatile", "while", "_Bool", "_Complex", "_Imaginary"
 };
 
-const std::unordered_set<char> special_chars = {'=', '!', '<', '>', '+', '-', '*', '/', '%', '&', '|', '^', '~', '(', '[', ']', ')', '\'', '"', '{', '}', '#', ',', ' '};
+const std::unordered_set<char> special_chars = {'=', '!', '<', '>', '+', '-', '*', '/', '%', '&', '|', '^', '~', '(', '[', ']', ')', '\'', '"', '{', '}', '#', ',', ';', ' '};
 
 std::vector<std::string>
 Function::analyze(const std::string& text) {
