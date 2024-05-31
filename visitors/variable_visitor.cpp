@@ -14,6 +14,7 @@ VariableVisitor::VariableVisitor(CParser::StatementContext *ctx, std::set<std::s
 
 VariableVisitor::VariableVisitor(CParser::ForConditionContext *ctx, std::set<std::string> &vars_alive, std::set<std::string> &vars_dead, std::set<std::string> &vars_found)
     : VariableVisitor(vars_alive, vars_dead, vars_found) {
+    add_found_vars(Function::analyze(get_text(ctx)));
     visitChildren(ctx);
 }
 
