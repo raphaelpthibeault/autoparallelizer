@@ -182,52 +182,55 @@ Function::parallelize_reduction(StatBlock &block, const std::map<std::string, st
 
 bool
 Function::check_assignment(CParser::AssignmentExpressionContext *assign, std::map<std::string, std::string> &reduction_vars) const {
-    if (assign->unaryExpression()->postfixExpression()->primaryExpression()->Identifier() != nullptr) {
-            std::string left = assign->unaryExpression()->postfixExpression()->primaryExpression()->Identifier()->getText();
+    if (assign->unaryExpression()->postfixExpression()->primaryExpression()->Identifier() == nullptr) {
+        return true;
+    }
 
-            if (reduction_vars.count(left)) {
-                return false;
-            }
+    if (assign->assignmentOperator()->getText() != "=") {
+        return false;
+    }
 
-            if (assign->assignmentOperator()->getText() != "=") {
-                return false;
-            }
+    std::string left = assign->unaryExpression()->postfixExpression()->primaryExpression()->Identifier()->getText();
 
-            std::string op = assign->assignmentOperator()->getText();
-            std::string code = get_text(assign->assignmentExpression());
-            auto analyzed = analyze(code);
+    if (reduction_vars.count(left)) {
+        return false;
+    }
 
-            int occurrences = 0;
-            for (const auto &id : analyzed) {
-                if (reduction_vars.count(id)) {
-                    reduction_vars.erase(id);
-                }
-                if (id == left) {
-                    ++occurrences;
-                }
-            }
 
-            if (op == "=") {
-                if (occurrences != 1) {
-                    return false;
-                }
-                if (assign->assignmentExpression() != nullptr) {
-                    return check_min_max(left, assign->assignmentExpression(), reduction_vars);
-                } else {
-                    // TODO: support direct assignments
-                    return false;
-                }
-            }
+    std::string op = assign->assignmentOperator()->getText();
+    std::string code = get_text(assign->assignmentExpression());
+    auto analyzed = analyze(code);
 
-            if (op.find_first_of("+=-=*=/=|=&=^=") != std::string::npos && occurrences != 0) {
-                return false;
-            }
-
-            reduction_vars[left] = op.substr(0, op.size() - 1);
+    int occurrences = 0;
+    for (const auto &id : analyzed) {
+        if (reduction_vars.count(id)) {
+            reduction_vars.erase(id);
         }
+        if (id == left) {
+            ++occurrences;
+        }
+    }
 
-        return true;}
+    if (op == "=") {
+        if (occurrences != 1) {
+            return false;
+        }
+        if (assign->assignmentExpression() != nullptr) {
+            return check_min_max(left, assign->assignmentExpression(), reduction_vars);
+        } else {
+            // TODO: support direct assignments
+            return false;
+        }
+    }
 
+    if (op.find_first_of("+=-=*=/=|=&=^=") != std::string::npos && occurrences != 0) {
+        return false;
+    }
+
+    reduction_vars[left] = op.substr(0, op.size() - 1);
+
+    return true;
+}
 
 bool
 Function::check_min_max(const std::string &left, CParser::AssignmentExpressionContext *expr2, std::map<std::string, std::string> &reduction_vars) const {
@@ -272,10 +275,8 @@ std::vector<std::string>
 Function::analyze(const std::string& text) {
     std::vector<std::string> variables;
     bool skip = false;
-
-   // std::cout << "ANALYZING TEXT: " << text;
-
     std::string current;
+
     for (char c : text) {
         if (c == '"')
             skip = !skip;
@@ -310,13 +311,7 @@ Function::analyze(const std::string& text) {
 
         variables.push_back(current);
     }
-/*
-    std::cout << "GAVE THESE VARIABLES: ";
-    for (auto var : variables) {
-        std::cout << var << " ";
-    }
-    std::cout << "\n";
-*/
+
     return variables;
 }
 
