@@ -131,16 +131,11 @@ parallelize(CParser &parser) {
 
     //std::cout << "----- eliminate dead code -----\n";
     function_order = eliminate_dead_code(function_order, prog);
-
-    for (auto func : function_order) {
-       func->print_flow_graph();
-    }
-
     //std::cout << "----- !eliminate dead code -----\n";
 
     //std::cout << "----- build dependency graph -----\n";
     for (auto func: function_order) {
-        //func->build_dependency_graph();
+        func->build_dependency_graph();
     }
 
     for (auto func : function_order) {

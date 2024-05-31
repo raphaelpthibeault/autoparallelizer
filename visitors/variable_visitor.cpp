@@ -3,57 +3,43 @@
 #include "util.hpp"
 #include "visitors.hpp"
 
-VariableVisitor::VariableVisitor(std::set<std::string> &vars_alive, std::set<std::string> &vars_dead)
-    : vars_alive(vars_alive), vars_dead(vars_dead) {}
+VariableVisitor::VariableVisitor(std::set<std::string> &vars_alive, std::set<std::string> &vars_dead, std::set<std::string> &vars_found)
+    : vars_alive(vars_alive), vars_dead(vars_dead), vars_found(vars_found) {}
 
-VariableVisitor::VariableVisitor(CParser::StatementContext *ctx, std::set<std::string> &vars_alive, std::set<std::string> &vars_dead)
-    : VariableVisitor(vars_alive, vars_dead) {
+VariableVisitor::VariableVisitor(CParser::StatementContext *ctx, std::set<std::string> &vars_alive, std::set<std::string> &vars_dead, std::set<std::string> &vars_found)
+    : VariableVisitor(vars_alive, vars_dead, vars_found) {
+    add_found_vars(Function::analyze(get_text(ctx)));
     visitChildren(ctx);
 }
 
-VariableVisitor::VariableVisitor(CParser::ForConditionContext *ctx, std::set<std::string> &vars_alive, std::set<std::string> &vars_dead)
-    : VariableVisitor(vars_alive, vars_dead) {
+VariableVisitor::VariableVisitor(CParser::ForConditionContext *ctx, std::set<std::string> &vars_alive, std::set<std::string> &vars_dead, std::set<std::string> &vars_found)
+    : VariableVisitor(vars_alive, vars_dead, vars_found) {
     visitChildren(ctx);
 }
 
-VariableVisitor::VariableVisitor(CParser::ExpressionContext *ctx, std::set<std::string> &vars_alive, std::set<std::string> &vars_dead)
-    : VariableVisitor(vars_alive, vars_dead) {
-    // called from For loop
-    //analyze_expression(Function::analyze(get_text(ctx)));
-
+VariableVisitor::VariableVisitor(CParser::ExpressionContext *ctx, std::set<std::string> &vars_alive, std::set<std::string> &vars_dead, std::set<std::string> &vars_found)
+    : VariableVisitor(vars_alive, vars_dead, vars_found) {
+    add_found_vars(Function::analyze(get_text(ctx)));
     visitChildren(ctx);
 }
 
-VariableVisitor::VariableVisitor(CParser::ForExpressionContext *ctx, std::set<std::string> &vars_alive, std::set<std::string> &vars_dead)
-    : VariableVisitor(vars_alive, vars_dead) {
+VariableVisitor::VariableVisitor(CParser::ForExpressionContext *ctx, std::set<std::string> &vars_alive, std::set<std::string> &vars_dead, std::set<std::string> &vars_found)
+    : VariableVisitor(vars_alive, vars_dead, vars_found) {
+    add_found_vars(Function::analyze(get_text(ctx)));
     visitChildren(ctx);
 }
 
-VariableVisitor::VariableVisitor(CParser::ForDeclarationContext *ctx, std::set<std::string> &vars_alive, std::set<std::string> &vars_dead)
-    : VariableVisitor(vars_alive, vars_dead) {
-        visitChildren(ctx);
-    }
+VariableVisitor::VariableVisitor(CParser::ForDeclarationContext *ctx, std::set<std::string> &vars_alive, std::set<std::string> &vars_dead, std::set<std::string> &vars_found)
+    : VariableVisitor(vars_alive, vars_dead, vars_found) {
+    add_found_vars(Function::analyze(get_text(ctx)));
+    visitChildren(ctx);
+}
 
-VariableVisitor::VariableVisitor(CParser::BlockItemContext *ctx, std::set<std::string> &vars_alive, std::set<std::string> &vars_dead)
-    : VariableVisitor(vars_alive, vars_dead) {
-/*
-        std::cout << "\nBLOCKITEMCONTEXT: " << get_text(ctx);
-
-        std::cout << "VARS_ALIVE BEFORE: ";
-        for (auto var : vars_alive) {
-            std::cout << var << " ";
-        }
-        std::cout << "\n";
-*/
-        visitChildren(ctx);
-/*
-        std::cout << "VARS_ALIVE AFTER: ";
-        for (auto var : vars_alive) {
-            std::cout << var << " ";
-        }
-        std::cout << "\n";
-*/
-    }
+VariableVisitor::VariableVisitor(CParser::BlockItemContext *ctx, std::set<std::string> &vars_alive, std::set<std::string> &vars_dead, std::set<std::string> &vars_found)
+    : VariableVisitor(vars_alive, vars_dead, vars_found) {
+    add_found_vars(Function::analyze(get_text(ctx)));
+    visitChildren(ctx);
+}
 
 VariableVisitor::~VariableVisitor() {}
 
@@ -178,8 +164,8 @@ VariableVisitor::visitLogicalOrExpression(CParser::LogicalOrExpressionContext *c
 }
 
 void
-VariableVisitor::analyze_expression(std::vector<std::string> var) {
-    for (const auto &id : var) {
+VariableVisitor::analyze_expression(std::vector<std::string> vars) {
+    for (const auto &id : vars) {
         vars_alive.insert(id);
     }
 }
@@ -188,5 +174,12 @@ void
 VariableVisitor::analyze_expression(antlr4::ParserRuleContext *ctx) {
     if (ctx->children.size() >= 3) {
         analyze_expression(Function::analyze(get_text(ctx)));
+    }
+}
+
+void
+VariableVisitor::add_found_vars(std::vector<std::string> vars) {
+    for (const auto &id : vars) {
+        vars_found.insert(id);
     }
 }

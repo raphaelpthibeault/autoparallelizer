@@ -21,19 +21,20 @@ public:
 
 class VariableVisitor : public CBaseVisitor {
 private:
-    void analyze_expression(std::vector<std::string> var);
+    void analyze_expression(std::vector<std::string> vars);
     void analyze_expression(antlr4::ParserRuleContext *ctx);
+    void add_found_vars(std::vector<std::string> vars);
 
 public:
-    std::set<std::string> &vars_alive, &vars_dead;
+    std::set<std::string> &vars_alive, &vars_dead, &vars_found;
 
-    VariableVisitor(std::set<std::string> &vars_alive, std::set<std::string> &vars_dead);
-    VariableVisitor(CParser::StatementContext *ctx, std::set<std::string> &vars_alive, std::set<std::string> &vars_dead);
-    VariableVisitor(CParser::ForConditionContext *ctx, std::set<std::string> &vars_alive, std::set<std::string> &vars_dead);
-    VariableVisitor(CParser::ExpressionContext *ctx, std::set<std::string> &vars_alive, std::set<std::string> &vars_dead);
-    VariableVisitor(CParser::ForExpressionContext *ctx, std::set<std::string> &vars_alive, std::set<std::string> &vars_dead);
-    VariableVisitor(CParser::ForDeclarationContext *ctx, std::set<std::string> &vars_alive, std::set<std::string> &vars_dead);
-    VariableVisitor(CParser::BlockItemContext *ctx, std::set<std::string> &vars_alive, std::set<std::string> &vars_dead);
+    VariableVisitor(std::set<std::string> &vars_alive, std::set<std::string> &vars_dead, std::set<std::string> &vars_found);
+    VariableVisitor(CParser::StatementContext *ctx, std::set<std::string> &vars_alive, std::set<std::string> &vars_dead, std::set<std::string> &vars_found);
+    VariableVisitor(CParser::ForConditionContext *ctx, std::set<std::string> &vars_alive, std::set<std::string> &vars_dead, std::set<std::string> &vars_found);
+    VariableVisitor(CParser::ExpressionContext *ctx, std::set<std::string> &vars_alive, std::set<std::string> &vars_dead, std::set<std::string> &vars_found);
+    VariableVisitor(CParser::ForExpressionContext *ctx, std::set<std::string> &vars_alive, std::set<std::string> &vars_dead, std::set<std::string> &vars_found);
+    VariableVisitor(CParser::ForDeclarationContext *ctx, std::set<std::string> &vars_alive, std::set<std::string> &vars_dead, std::set<std::string> &vars_found);
+    VariableVisitor(CParser::BlockItemContext *ctx, std::set<std::string> &vars_alive, std::set<std::string> &vars_dead, std::set<std::string> &vars_found);
     ~VariableVisitor();
 
     virtual antlrcpp::Any visitDeclaration(CParser::DeclarationContext *ctx) override;
