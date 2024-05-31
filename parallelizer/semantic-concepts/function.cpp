@@ -75,10 +75,7 @@ Function::build_dependency_graph() {
         blocks.push_back(block);
     }
 
-    for (i = flow_graph.size()-1; i >= 0; --i) {
-
-        std::cout << flow_graph[i].to_string() << "\n";
-
+    for (i = 0; i < flow_graph.size(); ++i) {
         for (const auto &alive : flow_graph[i].vars_alive) {
             for (j = i - 1; j >= 0; --j) {
                 if (flow_graph[j].vars_dead.count(alive)) {
@@ -122,10 +119,9 @@ Function::find_disconnected_components() {
     int curr_cc = 0;
     for (const auto &[block, neighbors] : dependency_graph) {
         if (!visited.count(block)) {
-            find_disconnected_components(block, visited, blocks_order, curr_cc);
+            find_disconnected_components(block, visited, blocks_order, curr_cc++);
         }
     }
-
 }
 
 std::string
@@ -329,6 +325,14 @@ Function::to_string() const {
     std::stringstream ss;
     ss << "ID: " << id << " ;BODY_CTX: " << body_ctx->getText() << "\n";
     return ss.str();
+}
+
+void
+Function::print_blocks_order() {
+    for (const auto &block : blocks_order) {
+        std::cout << id << " Order: " << block.second  << " " << block.first.to_string() << "\n";
+    }
+
 }
 
 /* PRIVATE */

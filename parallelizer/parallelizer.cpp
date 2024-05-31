@@ -137,16 +137,22 @@ parallelize(CParser &parser) {
     for (auto func: function_order) {
         func->build_dependency_graph();
     }
-
+/*
     for (auto func : function_order) {
-        //func->print_dependency_graph();
+        func->print_dependency_graph();
     }
+*/
     //std::cout << "----- !build dependency graph -----\n";
 
     //std::cout << "----- find disconnected components -----\n";
     for (auto func: function_order) {
-        //func->find_disconnected_components();
+        func->find_disconnected_components();
     }
+/*
+    for (auto func : function_order) {
+        func->print_blocks_order();
+    }
+*/
     //std::cout << "----- !find disconnected components -----\n";
 
 

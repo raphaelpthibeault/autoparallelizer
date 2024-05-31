@@ -69,6 +69,7 @@ public:
     std::map<std::string, std::vector<std::string>> check_reduction(CParser::CompoundStatementContext *ctx) const;
     static std::vector<std::string> analyze(const std::string& text);
     std::string to_string() const;
+    void print_blocks_order();
 
     bool operator<(const Function& other) const {
         return id < other.id;
