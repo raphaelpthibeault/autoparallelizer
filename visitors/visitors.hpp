@@ -2,6 +2,7 @@
 #define __VISITORS_HPP
 
 #include "support/Any.h"
+#include "support/Declarations.h"
 #include <CBaseVisitor.h>
 #include <CParser.h>
 #include <semantic-concepts/concepts.hpp>
@@ -21,6 +22,7 @@ public:
 class VariableVisitor : public CBaseVisitor {
 private:
     void analyze_expression(std::vector<std::string> var);
+    void analyze_expression(antlr4::ParserRuleContext *ctx);
 
 public:
     std::set<std::string> &vars_alive, &vars_dead;
@@ -37,8 +39,17 @@ public:
     virtual antlrcpp::Any visitDeclaration(CParser::DeclarationContext *ctx) override;
     virtual antlrcpp::Any visitAssignmentExpression(CParser::AssignmentExpressionContext *ctx) override;
     virtual antlrcpp::Any visitPostfixExpression(CParser::PostfixExpressionContext *ctx) override;
-    virtual antlrcpp::Any visitExpression(CParser::ExpressionContext *ctx) override;
-    virtual antlrcpp::Any visitPrimaryExpression(CParser::PrimaryExpressionContext *ctx) override;
+
+    virtual antlrcpp::Any visitMultiplicativeExpression(CParser::MultiplicativeExpressionContext *ctx) override;
+    virtual antlrcpp::Any visitAdditiveExpression(CParser::AdditiveExpressionContext *ctx) override;
+    virtual antlrcpp::Any visitShiftExpression(CParser::ShiftExpressionContext *ctx) override;
+    virtual antlrcpp::Any visitRelationalExpression(CParser::RelationalExpressionContext *ctx) override;
+    virtual antlrcpp::Any visitEqualityExpression(CParser::EqualityExpressionContext *ctx) override;
+    virtual antlrcpp::Any visitAndExpression(CParser::AndExpressionContext *ctx) override;
+    virtual antlrcpp::Any visitExclusiveOrExpression(CParser::ExclusiveOrExpressionContext *ctx) override;
+    virtual antlrcpp::Any visitInclusiveOrExpression(CParser::InclusiveOrExpressionContext *ctx) override;
+    virtual antlrcpp::Any visitLogicalAndExpression(CParser::LogicalAndExpressionContext *ctx) override;
+    virtual antlrcpp::Any visitLogicalOrExpression(CParser::LogicalOrExpressionContext *ctx) override;
 
 };
 

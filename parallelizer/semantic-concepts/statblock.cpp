@@ -28,8 +28,6 @@ StatBlock::get_vars_control_struct(CParser::StatementContext *ctx) {
     } else if (ctx->selectionStatement() != nullptr) {
         if (ctx->selectionStatement()->expression() != nullptr) {
             new VariableVisitor(ctx->selectionStatement()->expression(), vars_alive, vars_dead);
-            // am I missing the else?
-
         }
         get_vars_control_struct_body(ctx->selectionStatement()->statement(0)->compoundStatement());
         if (ctx->selectionStatement()->Else() != nullptr) {
@@ -83,7 +81,7 @@ void
 StatBlock::get_vars(std::list<CParser::BlockItemContext *> ctxs) {
     if (ctxs.empty()) return;
 
-    for (auto it = ctxs.rbegin(); it != ctxs.rend(); ++it) {
+    for (auto it = ctxs.begin(); it != ctxs.end(); ++it) {
         CParser::BlockItemContext *next = *it;
         if (is_scope2(next)) {
             get_vars_control_struct(next->statement());

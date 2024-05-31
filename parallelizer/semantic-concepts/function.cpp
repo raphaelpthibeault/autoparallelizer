@@ -1,7 +1,8 @@
-#include "CParser.h"
 #include "concepts.hpp"
 #include "util.hpp"
+#include <algorithm>
 #include <iterator>
+#include <memory>
 #include <sstream>
 #include <utility>
 #include <vector>
@@ -9,7 +10,7 @@
 /* PUBLIC */
 
 Function::Function(const std::string &id, CParser::CompoundStatementContext *body_ctx, antlr4::ParserRuleContext *function_ctx)
-    : id(id), body_ctx(body_ctx), function_ctx(function_ctx){}
+    : id(id), body_ctx(body_ctx), function_ctx(function_ctx) {}
 
 Function::Function(const std::string &id) : Function(id, nullptr, nullptr) {}
 
@@ -52,6 +53,7 @@ Function::build_flow_graph() {
     if (!curr.instructions.empty()) {
         flow_graph.push_back(curr);
     }
+
 }
 
 void
@@ -74,6 +76,9 @@ Function::build_dependency_graph() {
     }
 
     for (i = flow_graph.size()-1; i >= 0; --i) {
+
+        std::cout << flow_graph[i].to_string() << "\n";
+
         for (const auto &alive : flow_graph[i].vars_alive) {
             for (j = i - 1; j >= 0; --j) {
                 if (flow_graph[j].vars_dead.count(alive)) {
@@ -95,7 +100,7 @@ Function::build_dependency_graph() {
 void
 Function::print_dependency_graph() {
     for (const auto &[block, neighbors] : dependency_graph) {
-        std::cout << block.id << " -> ";
+        std::cout << id << " " << block.id << " -> ";
         for (const auto &neighbor : neighbors) {
             std::cout << neighbor.id << " ";
         }
@@ -153,7 +158,23 @@ Function::get_virtual_name(CParser::PostfixExpressionContext *ctx) {
 
 std::string
 Function::parallelize(bool reduction_operation) const {
-    /* TODO */
+    if (function_ctx == nullptr)
+        return "";
+
+    std::stringstream parallelized;
+
+    if (auto f = dynamic_cast<CParser::FunctionDefinitionContext *>(function_ctx)) {
+        if (f->declarationSpecifiers() != nullptr)
+            parallelized << get_text(f->declarationSpecifiers());
+
+        parallelized << get_text(f->declarator());
+
+        if (f->declarationList() != nullptr)
+            parallelized << get_text(f->declarationList());
+
+        std::cout << parallelized.str();
+    }
+
     return "";
 }
 
@@ -214,7 +235,7 @@ Function::check_assignment(CParser::AssignmentExpressionContext *assign, std::ma
 
 bool
 Function::check_min_max(const std::string &left, CParser::AssignmentExpressionContext *expr2, std::map<std::string, std::string> &reduction_vars) const {
-    /* TODO */
+    std::cout << "checking min-max of " << left << " " << get_text(expr2);
     return true;
 }
 
@@ -334,7 +355,8 @@ void
 Function::get_vars() {
     vars_alive.clear();
     vars_dead.clear();
-    for (auto it = flow_graph.rbegin(); it != flow_graph.rend(); ++it) {
+    for (auto it = flow_graph.begin(); it != flow_graph.end(); ++it) {
+        //std::cout << "******************************" << id << " BLOCK" << it->id << "******************************\n";
         it->get_vars();
     }
 }

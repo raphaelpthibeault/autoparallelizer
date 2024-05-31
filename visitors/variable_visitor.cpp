@@ -1,3 +1,4 @@
+#include "ParserRuleContext.h"
 #include "support/Any.h"
 #include "util.hpp"
 #include "visitors.hpp"
@@ -17,7 +18,10 @@ VariableVisitor::VariableVisitor(CParser::ForConditionContext *ctx, std::set<std
 
 VariableVisitor::VariableVisitor(CParser::ExpressionContext *ctx, std::set<std::string> &vars_alive, std::set<std::string> &vars_dead)
     : VariableVisitor(vars_alive, vars_dead) {
-    analyze_expression(Function::analyze(get_text(ctx)));
+    // called from For loop
+    //analyze_expression(Function::analyze(get_text(ctx)));
+
+    visitChildren(ctx);
 }
 
 VariableVisitor::VariableVisitor(CParser::ForExpressionContext *ctx, std::set<std::string> &vars_alive, std::set<std::string> &vars_dead)
@@ -32,7 +36,23 @@ VariableVisitor::VariableVisitor(CParser::ForDeclarationContext *ctx, std::set<s
 
 VariableVisitor::VariableVisitor(CParser::BlockItemContext *ctx, std::set<std::string> &vars_alive, std::set<std::string> &vars_dead)
     : VariableVisitor(vars_alive, vars_dead) {
+/*
+        std::cout << "\nBLOCKITEMCONTEXT: " << get_text(ctx);
+
+        std::cout << "VARS_ALIVE BEFORE: ";
+        for (auto var : vars_alive) {
+            std::cout << var << " ";
+        }
+        std::cout << "\n";
+*/
         visitChildren(ctx);
+/*
+        std::cout << "VARS_ALIVE AFTER: ";
+        for (auto var : vars_alive) {
+            std::cout << var << " ";
+        }
+        std::cout << "\n";
+*/
     }
 
 VariableVisitor::~VariableVisitor() {}
@@ -45,16 +65,14 @@ VariableVisitor::visitDeclaration(CParser::DeclarationContext *ctx) {
 
     if (ctx->initDeclaratorList() != nullptr) {
         for (auto init_decl : ctx->initDeclaratorList()->initDeclarator()) {
+
             if (init_decl->Assign() != nullptr && init_decl->initializer() != nullptr) {
                 analyze_expression(Function::analyze(get_text(init_decl->initializer())));
             } else {
                 // declared but not assigned
-
                 if (init_decl->declarator()->directDeclarator()->Identifier() == nullptr) {
                     for (auto dd = init_decl->declarator()->directDeclarator(); dd != nullptr && dd->assignmentExpression()!=nullptr; dd = dd->directDeclarator()) {
-
                         analyze_expression(Function::analyze(get_text(dd->assignmentExpression())));
-
                     }
                 }
             }
@@ -66,9 +84,15 @@ VariableVisitor::visitDeclaration(CParser::DeclarationContext *ctx) {
 
 antlrcpp::Any
 VariableVisitor::visitAssignmentExpression(CParser::AssignmentExpressionContext *ctx) {
-    //std::cout << get_text(ctx) << "\n";
+    // ignores the left side of all assignment operators (=, +=, *= ...) and unary operators (++) in one shot
+    if (ctx->assignmentExpression() != nullptr) {
+        analyze_expression(Function::analyze(get_text(ctx->assignmentExpression())));
+    }
+    // but sometimes the left side has interesting stuff
+    // arr[i][j]++ or arr[i][j] = 10 where here we clearly see the values of i and j being used, but arr isn't technically being used
+    // id1->id2++ or id1->id2++
+    // this is handled by postfix expression, actually
 
-    analyze_expression(Function::analyze(get_text(ctx)));
     return visitChildren(ctx);
 }
 
@@ -85,50 +109,84 @@ VariableVisitor::visitPostfixExpression(CParser::PostfixExpressionContext *ctx) 
         analyze_expression(Function::analyze(get_text(expr)));
     }
 
+    if (ctx->children.size() >= 3 && ctx->children[1]->getText() == "(") {
+        // function call id, lpar, rpar
+        analyze_expression(Function::analyze(get_text(ctx)));
+    }
+
     return visitChildren(ctx);
 }
 
 antlrcpp::Any
-VariableVisitor::visitExpression(CParser::ExpressionContext *ctx) {
-    /* an expression, so obviously all the values are observed and therefore live */
-
-   //std::cout << get_text(ctx) << "\n";
-
-    for (auto assignmentExprCtx : ctx->assignmentExpression()) {
-        analyze_expression(Function::analyze(get_text(assignmentExprCtx)));
-    }
+VariableVisitor::visitMultiplicativeExpression(CParser::MultiplicativeExpressionContext *ctx) {
+    analyze_expression(ctx);
     return visitChildren(ctx);
 }
 
 antlrcpp::Any
-VariableVisitor::visitPrimaryExpression(CParser::PrimaryExpressionContext *ctx) {
-    antlr4::tree::TerminalNode *id = ctx->Identifier();
-    if (id) {
-        bool is_func = false;
-        if (ctx->parent != nullptr) {
-            for (auto child : ctx->parent->children) {
-                if (child->getText() == "(" || child->getText() == ")") {
-                    is_func = true;
-                }
-            }
-        }
-
-        if (!is_func) {
-            vars_alive.insert(id->getText());
-        } else {
-            std::cout << get_text(ctx) << "\n";
-            // is it an equals or not
-
-        }
-    }
+VariableVisitor::visitAdditiveExpression(CParser::AdditiveExpressionContext *ctx) {
+    analyze_expression(ctx);
     return visitChildren(ctx);
 }
 
+antlrcpp::Any
+VariableVisitor::visitShiftExpression(CParser::ShiftExpressionContext *ctx) {
+    analyze_expression(ctx);
+    return visitChildren(ctx);
+}
 
+antlrcpp::Any
+VariableVisitor::visitRelationalExpression(CParser::RelationalExpressionContext *ctx) {
+    analyze_expression(ctx);
+    return visitChildren(ctx);
+}
+
+antlrcpp::Any
+VariableVisitor::visitEqualityExpression(CParser::EqualityExpressionContext *ctx) {
+    analyze_expression(ctx);
+    return visitChildren(ctx);
+}
+
+antlrcpp::Any
+VariableVisitor::visitAndExpression(CParser::AndExpressionContext *ctx) {
+    analyze_expression(ctx);
+    return visitChildren(ctx);
+}
+
+antlrcpp::Any
+VariableVisitor::visitExclusiveOrExpression(CParser::ExclusiveOrExpressionContext *ctx) {
+    analyze_expression(ctx);
+    return visitChildren(ctx);
+}
+
+antlrcpp::Any
+VariableVisitor::visitInclusiveOrExpression(CParser::InclusiveOrExpressionContext *ctx) {
+    analyze_expression(ctx);
+    return visitChildren(ctx);
+}
+
+antlrcpp::Any
+VariableVisitor::visitLogicalAndExpression(CParser::LogicalAndExpressionContext *ctx) {
+    analyze_expression(ctx);
+    return visitChildren(ctx);
+}
+
+antlrcpp::Any
+VariableVisitor::visitLogicalOrExpression(CParser::LogicalOrExpressionContext *ctx) {
+    analyze_expression(ctx);
+    return visitChildren(ctx);
+}
 
 void
 VariableVisitor::analyze_expression(std::vector<std::string> var) {
     for (const auto &id : var) {
         vars_alive.insert(id);
+    }
+}
+
+void
+VariableVisitor::analyze_expression(antlr4::ParserRuleContext *ctx) {
+    if (ctx->children.size() >= 3) {
+        analyze_expression(Function::analyze(get_text(ctx)));
     }
 }

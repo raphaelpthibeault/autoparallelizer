@@ -1,7 +1,6 @@
 #ifndef __CONCEPTS_HPP
 #define __CONCEPTS_HPP
 
-#include "ParserRuleContext.h"
 #include <cstddef>
 #include <iostream>
 #include <string>
@@ -19,8 +18,6 @@ class StatBlock {
 public:
     std::list<CParser::BlockItemContext *> instructions;
     std::set<std::string> vars_alive, vars_dead;
-    std::set<std::string> def_b, use_b;
-    std::set<std::string> in_b, out_b;
 
     int id;
 

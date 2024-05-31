@@ -122,32 +122,38 @@ parallelize(CParser &parser) {
     for (auto func : function_order) {
         func->find_dependencies();
     }
+
+    for (auto func : function_order) {
+       //func->print_flow_graph();
+    }
+
+    //std::cout << "----- !find dependencies -----\n";
+
+    //std::cout << "----- eliminate dead code -----\n";
+    function_order = eliminate_dead_code(function_order, prog);
+
     for (auto func : function_order) {
        func->print_flow_graph();
     }
 
-    //std::cout << "----- !find dependencies -----\n";
-/*
-    //std::cout << "----- eliminate dead code -----\n";
-    function_order = eliminate_dead_code(function_order, prog);
     //std::cout << "----- !eliminate dead code -----\n";
 
     //std::cout << "----- build dependency graph -----\n";
     for (auto func: function_order) {
-        func->build_dependency_graph();
+        //func->build_dependency_graph();
     }
-    //std::cout << "----- !build dependency graph -----\n";
 
     for (auto func : function_order) {
         //func->print_dependency_graph();
     }
+    //std::cout << "----- !build dependency graph -----\n";
 
     //std::cout << "----- find disconnected components -----\n";
     for (auto func: function_order) {
-        func->find_disconnected_components();
-        }
+        //func->find_disconnected_components();
+    }
     //std::cout << "----- !find disconnected components -----\n";
-*/
+
 
 
     std::cout << "---------- !Parallelization ----------\n";
