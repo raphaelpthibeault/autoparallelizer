@@ -47,7 +47,6 @@ VariableVisitor::~VariableVisitor() {}
 antlrcpp::Any
 VariableVisitor::visitDeclaration(CParser::DeclarationContext *ctx) {
     // declaration, or declaration and assignment
-    // variables (the ones not being declared) are being observed
     // e.g. int x = y; int x = function(y); int arr[x][y];
 
     if (ctx->initDeclaratorList() != nullptr) {
@@ -75,16 +74,17 @@ VariableVisitor::visitAssignmentExpression(CParser::AssignmentExpressionContext 
     if (ctx->assignmentExpression() != nullptr) {
         analyze_expression(Function::analyze(get_text(ctx->assignmentExpression())));
     }
-    // but sometimes the left side has interesting stuff
-    // arr[i][j]++ or arr[i][j] = 10 where here we clearly see the values of i and j being used, but arr isn't technically being used
-    // id1->id2++ or id1->id2++
-    // this is handled by postfix expression, actually
 
     return visitChildren(ctx);
 }
 
 antlrcpp::Any
 VariableVisitor::visitPostfixExpression(CParser::PostfixExpressionContext *ctx) {
+    if (!ctx->Identifier().empty() || !ctx->expression().empty()) {
+        analyze_expression(Function::analyze(get_text(ctx)));
+    }
+
+/*
     // id->id->id...
     for (auto terminal_node : ctx->Identifier()) {
         std::string id = terminal_node->getText();
@@ -95,6 +95,7 @@ VariableVisitor::visitPostfixExpression(CParser::PostfixExpressionContext *ctx) 
     for (auto expr : ctx->expression()) {
         analyze_expression(Function::analyze(get_text(expr)));
     }
+*/
 
     if (ctx->children.size() >= 3 && ctx->children[1]->getText() == "(") {
         // function call id, lpar, rpar

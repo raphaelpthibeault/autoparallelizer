@@ -1,13 +1,12 @@
 #ifndef __VISITORS_HPP
 #define __VISITORS_HPP
 
-#include "support/Any.h"
-#include "support/Declarations.h"
 #include <CBaseVisitor.h>
 #include <CParser.h>
 #include <semantic-concepts/concepts.hpp>
 #include <utility>
 #include <util.hpp>
+#include <CLexer.h>
 
 class GlobalVisitor : public CBaseVisitor {
 public:
@@ -79,6 +78,25 @@ public:
     virtual antlrcpp::Any visitFunctionDefinition(CParser::FunctionDefinitionContext *ctx) override;
     virtual antlrcpp::Any visitPostfixExpression(CParser::PostfixExpressionContext *ctx) override;
 };
+
+/*
+class DirectivesAndMacrosListener : public antlr4::tree::ParseTreeListener {
+public:
+    Program &program;
+
+    DirectivesAndMacrosListener(Program &program) : program(program) {}
+    ~DirectivesAndMacrosListener() = default;
+
+    void visitTerminal(antlr4::tree::TerminalNode * node) override {
+        antlr4::Token *token = node->getSymbol();
+        int type = token->getType();
+
+        if (type == CLexer::Directive || type == CLexer::MultiLineMacro) {
+            program.add(token->getText() + "\n");
+        }
+    }
+};*/
+
 
 
 #endif // __VISITORS_HPP

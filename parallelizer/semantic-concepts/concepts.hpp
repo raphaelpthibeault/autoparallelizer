@@ -17,7 +17,7 @@
 class StatBlock {
 public:
     std::list<CParser::BlockItemContext *> instructions;
-    std::set<std::string> vars_alive, vars_dead, vars_found;
+    std::set<std::string> vars_used, vars_unused, vars_found;
 
     int id;
 
@@ -36,6 +36,11 @@ public:
     bool operator<(const StatBlock& other) const {
         return id < other.id;
     }
+
+    bool operator==(const StatBlock &other) const {
+        return id == other.id;
+    }
+
 };
 
 
@@ -43,8 +48,7 @@ class Function {
 public:
     std::vector<StatBlock> flow_graph;
     std::map<StatBlock, std::set<StatBlock>> dependency_graph;
-    std::vector<std::pair<StatBlock, int>> blocks_order;
-    //std::unique_ptr<StatBlock> decl_block;
+    std::vector<std::pair<StatBlock, int>> blocks_components;
     std::unique_ptr<StatBlock> ret_block;
     std::string id;
     CParser::CompoundStatementContext *body_ctx;
@@ -59,7 +63,6 @@ public:
     void build_dependency_graph();
     void print_dependency_graph();
     void find_dependencies();
-    void find_disconnected_components();
     static std::string get_virtual_name(CParser::FunctionDefinitionContext *ctx);
     static std::string get_virtual_name(CParser::PostfixExpressionContext *ctx);
     std::string parallelize(bool reduction_operation) const;
@@ -69,6 +72,7 @@ public:
     std::map<std::string, std::vector<std::string>> check_reduction(CParser::CompoundStatementContext *ctx) const;
     static std::vector<std::string> analyze(const std::string& text);
     std::string to_string() const;
+    void determine_blocks_components();
     void print_blocks_order();
 
     bool operator<(const Function& other) const {
@@ -81,11 +85,20 @@ public:
     }
 
 private:
-    void find_disconnected_components(StatBlock block, std::set<StatBlock> &visited, std::vector<std::pair<StatBlock, int>> &topsort, int curr_cc);
     bool is_scope(CParser::StatementContext *ctx);
     void get_vars();
+    void explore_component(const StatBlock& start, int componentId, std::map<StatBlock, bool>& visited);
+
 };
 
+namespace std {
+    template<>
+    struct hash<StatBlock> {
+        std::size_t operator()(const StatBlock &block) const {
+            return std::hash<int>()(block.id);
+        }
+    };
+}
 
 class Program {
 public:

@@ -8,7 +8,7 @@ get_text(const antlr4::ParserRuleContext *ctx) {
     size_t start = ctx->start->getStartIndex();
     size_t stop = ctx->stop->getStopIndex();
     antlr4::misc::Interval interval(start, stop);
-    return ctx->start->getInputStream()->getText(interval) + "\n";
+    return ctx->start->getInputStream()->getText(interval);
 }
 
 void

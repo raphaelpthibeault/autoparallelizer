@@ -83,12 +83,9 @@ eliminate_dead_code(std::vector<std::shared_ptr<Function>> &order, Program &prog
     return new_order;
 }
 
-
-
 void
 parallelize(CParser &parser) {
     std::cout << "---------- Parallelization ----------\n";
-
     Program prog;
 
     antlr4::tree::ParseTree *tree = parser.compilationUnit();
@@ -114,8 +111,6 @@ parallelize(CParser &parser) {
     for (auto func : function_order) {
         func->build_flow_graph();
     }
-/*
-*/
     //std::cout << "----- !build flow graphs -----\n\n";
 
     //std::cout << "----- find dependencies -----\n";
@@ -137,26 +132,57 @@ parallelize(CParser &parser) {
     for (auto func: function_order) {
         func->build_dependency_graph();
     }
+
 /*
     for (auto func : function_order) {
         func->print_dependency_graph();
     }
+    std::cout << "\n\n";
 */
+
     //std::cout << "----- !build dependency graph -----\n";
 
     //std::cout << "----- find disconnected components -----\n";
+
+
     for (auto func: function_order) {
-        func->find_disconnected_components();
+        //func->find_disconnected_components();
+        func->determine_blocks_components();
     }
-/*
+
     for (auto func : function_order) {
-        func->print_blocks_order();
+       // func->print_blocks_order();
     }
-*/
+
     //std::cout << "----- !find disconnected components -----\n";
 
+    // add the global directives
+
+    // parallelize
+
+    //std::cout << "\n\n\n\n";
+
+   /*
+    prog.add("#include <omp.h>\n");
 
 
+    for (auto func: function_order) {
+        prog.add(func->parallelize(false));
+    }
+
+    // write to file
+
+    std::string filename = "parallelized.c";
+
+    std::ofstream outfile(filename);
+    if (!outfile) {
+        std::cerr << "Error opening file: " << filename << std::endl;
+        return;
+    }
+
+    outfile << prog.parallelized_code.str();
+    outfile.close();
+*/
     std::cout << "---------- !Parallelization ----------\n";
 }
 

@@ -1,11 +1,11 @@
 #include "concepts.hpp"
-#include "util.hpp"
 #include <algorithm>
 #include <iterator>
 #include <memory>
 #include <sstream>
 #include <utility>
 #include <vector>
+#include <queue>
 
 /* PUBLIC */
 
@@ -76,17 +76,17 @@ Function::build_dependency_graph() {
     }
 
     for (i = 0; i < flow_graph.size(); ++i) {
-        for (const auto &alive : flow_graph[i].vars_alive) {
+        for (const auto &alive : flow_graph[i].vars_used) {
             for (j = i - 1; j >= 0; --j) {
-                if (flow_graph[j].vars_dead.count(alive)) {
+                if (flow_graph[j].vars_unused.count(alive)) {
                     dependency_graph[blocks[j]].insert(blocks[i]);
                     break;
                 }
             }
         }
-        for (const auto &dead : flow_graph[i].vars_dead) {
+        for (const auto &dead : flow_graph[i].vars_unused) {
             for (j = i - 1; j >= 0; --j) {
-                if (flow_graph[j].vars_alive.count(dead)) {
+                if (flow_graph[j].vars_used.count(dead)) {
                     dependency_graph[blocks[j]].insert(blocks[i]);
                 }
             }
@@ -109,19 +109,6 @@ void
 Function::find_dependencies() {
     if (body_ctx == nullptr) return;
     get_vars();
-}
-
-void
-Function::find_disconnected_components() {
-    std::set<StatBlock> visited;
-    blocks_order.clear();
-
-    int curr_cc = 0;
-    for (const auto &[block, neighbors] : dependency_graph) {
-        if (!visited.count(block)) {
-            find_disconnected_components(block, visited, blocks_order, curr_cc++);
-        }
-    }
 }
 
 std::string
@@ -151,7 +138,6 @@ Function::get_virtual_name(CParser::PostfixExpressionContext *ctx) {
     return name.str();
 }
 
-
 std::string
 Function::parallelize(bool reduction_operation) const {
     if (function_ctx == nullptr)
@@ -163,22 +149,86 @@ Function::parallelize(bool reduction_operation) const {
         if (f->declarationSpecifiers() != nullptr)
             parallelized << get_text(f->declarationSpecifiers());
 
-        parallelized << get_text(f->declarator());
+        parallelized << " " << get_text(f->declarator());
 
         if (f->declarationList() != nullptr)
             parallelized << get_text(f->declarationList());
 
-        std::cout << parallelized.str();
     }
 
-    return "";
+    parallelized << " {\n"; // function
+
+    std::vector<std::vector<StatBlock>> sections;
+
+    for (const auto &[block, c] : blocks_components) {
+        if (c >= sections.size()) {
+            sections.emplace_back();
+        }
+
+        sections[c].emplace_back(block);
+    }
+/*
+    for (const auto &section: sections) {
+        if (section.size() > 1) {
+            parallelized << "\t#pragma omp parallel sections\n\t{\n";
+            for (const auto& block : section) {
+                parallelized << "\t\t#pragma omp section\n\t\t{\n";
+                const auto &instructions = block.instructions;
+
+                if (reduction_operation) {
+                    //  if nonempty and is "for" block
+                } else {
+                   parallelized << block.get_txt(3);
+                }
+                parallelized << "\t\t}\n";
+            }
+
+            parallelized << "\t}\n";
+        } else {
+            const auto &instructions = section[0].instructions;
+            if (reduction_operation) {
+                //if nonempty and is "for" block
+            } else {
+                parallelized << section[0].get_txt(1);
+            }
+        }
+    }*/
+
+    if (sections.size() > 1) {
+        // Sections construct
+        parallelized << "\t#pragma omp parallel sections\n\t{\n";
+
+        for (const auto &section : sections) {
+            parallelized << "\t\t#pragma omp section\n\t\t{\n";
+
+            for (const auto &block : section) {
+                parallelized << block.get_txt(3);
+            }
+            parallelized << "\t\t}\n";
+        }
+        parallelized << "\t}\n";
+    } else if (sections.size() == 1) {
+        for (const auto &block : sections[0]) {
+            //  if nonempty and is "for" block
+            parallelized << block.get_txt(1);
+        }
+    }
+
+    if (ret_block) {
+        parallelized << ret_block->get_txt(1);
+    }
+
+    parallelized << "}\n";
+
+    //std::cout << parallelized.str() << "\n\n\n\n";
+
+    return parallelized.str();
 }
 
 void
 Function::parallelize_reduction(StatBlock &block, const std::map<std::string, std::vector<std::string>> &reduction, std::stringstream &parallelized, int tabs) const {
     /* TODO */
 }
-
 
 bool
 Function::check_assignment(CParser::AssignmentExpressionContext *assign, std::map<std::string, std::string> &reduction_vars) const {
@@ -195,7 +245,6 @@ Function::check_assignment(CParser::AssignmentExpressionContext *assign, std::ma
     if (reduction_vars.count(left)) {
         return false;
     }
-
 
     std::string op = assign->assignmentOperator()->getText();
     std::string code = get_text(assign->assignmentExpression());
@@ -234,7 +283,7 @@ Function::check_assignment(CParser::AssignmentExpressionContext *assign, std::ma
 
 bool
 Function::check_min_max(const std::string &left, CParser::AssignmentExpressionContext *expr2, std::map<std::string, std::string> &reduction_vars) const {
-    std::cout << "checking min-max of " << left << " " << get_text(expr2);
+    /* TODO */
     return true;
 }
 
@@ -323,26 +372,63 @@ Function::to_string() const {
 }
 
 void
-Function::print_blocks_order() {
-    for (const auto &block : blocks_order) {
-        std::cout << id << " Order: " << block.second  << " " << block.first.to_string() << "\n";
+Function::determine_blocks_components() {
+    /* find weekly connected components in a DAG */
+
+    blocks_components.clear();
+    std::map<StatBlock, bool> visited;
+    int c = 0;
+
+    for (const auto& entry : dependency_graph) {
+        if (!visited[entry.first]) {
+            explore_component(entry.first, c, visited);
+            c++;
+        }
     }
 
+    std::sort(blocks_components.begin(), blocks_components.end(), [](const auto &a, const auto &b) {
+        if (a.second == b.second) {
+            return a.first < b.first;
+        }
+        return a.second < b.second;
+    });
+}
+
+void
+Function::print_blocks_order() {
+    for (const auto &[block, g] : blocks_components) {
+        std::cout << id << " Block: " << block.id << ", Component: " << g << "\n";
+    }
 }
 
 /* PRIVATE */
 
 void
-Function::find_disconnected_components(StatBlock block, std::set<StatBlock> &visited, std::vector<std::pair<StatBlock, int>> &topsort, int curr_cc) {
-    visited.insert(block);
+Function::explore_component(const StatBlock& start, int c, std::map<StatBlock, bool>& visited) {
+    std::queue<StatBlock> to_explore;
+    to_explore.push(start);
+    visited[start] = true;
 
-    for (const auto &neighbor : dependency_graph[block]) {
-        if (!visited.count(neighbor)) {
-            find_disconnected_components(neighbor, visited, topsort, curr_cc);
+    while (!to_explore.empty()) {
+        StatBlock current = to_explore.front();
+        to_explore.pop();
+
+        blocks_components.push_back({current, c});
+
+        for (const StatBlock& neighbor : dependency_graph[current]) {
+            if (!visited[neighbor]) {
+                to_explore.push(neighbor);
+                visited[neighbor] = true;
+            }
+        }
+
+        for (const auto& entry : dependency_graph) {
+            if (entry.second.find(current) != entry.second.end() && !visited[entry.first]) {
+                to_explore.push(entry.first);
+                visited[entry.first] = true;
+            }
         }
     }
-
-    topsort.emplace_back(block, curr_cc);
 }
 
 bool

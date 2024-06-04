@@ -1,6 +1,7 @@
 #include "concepts.hpp"
 #include "util.hpp"
 #include "visitors.hpp"
+#include <sstream>
 
 StatBlock::StatBlock(int id) : id(id) {}
 
@@ -27,7 +28,7 @@ StatBlock::get_vars_control_struct(CParser::StatementContext *ctx) {
         }
     } else if (ctx->selectionStatement() != nullptr) {
         if (ctx->selectionStatement()->expression() != nullptr) {
-            new VariableVisitor(ctx->selectionStatement()->expression(), vars_alive, vars_dead, vars_found);
+            new VariableVisitor(ctx->selectionStatement()->expression(), vars_used, vars_unused, vars_found);
         }
         get_vars_control_struct_body(ctx->selectionStatement()->statement(0)->compoundStatement());
         if (ctx->selectionStatement()->Else() != nullptr) {
@@ -54,20 +55,20 @@ void
 StatBlock::get_vars_iters(CParser::IterationStatementContext *ctx) {
     if (ctx->For() != nullptr) {
         if (ctx->forCondition()->expression() != nullptr) {
-            new VariableVisitor(ctx->forCondition()->expression(), vars_alive, vars_dead, vars_found);
+            new VariableVisitor(ctx->forCondition()->expression(), vars_used, vars_unused, vars_found);
         } else if (ctx->forCondition()->forDeclaration() != nullptr) {
-            new VariableVisitor(ctx->forCondition()->forDeclaration(), vars_alive, vars_dead, vars_found);
+            new VariableVisitor(ctx->forCondition()->forDeclaration(), vars_used, vars_unused, vars_found);
         }
 
         get_vars_control_struct_body(ctx->statement()->compoundStatement());
 
         for (auto expr : ctx->forCondition()->forExpression()) {
-            new VariableVisitor(expr, vars_alive, vars_dead, vars_found);
+            new VariableVisitor(expr, vars_used, vars_unused, vars_found);
         }
     } else if (ctx->While() != nullptr || ctx->Do() != nullptr) {
         get_vars_control_struct_body(ctx->statement()->compoundStatement());
         if (ctx->expression() != nullptr) {
-            new VariableVisitor(ctx->expression(), vars_alive, vars_dead, vars_found);
+            new VariableVisitor(ctx->expression(), vars_used, vars_unused, vars_found);
         }
     }
 }
@@ -78,8 +79,8 @@ StatBlock::get_vars() {
 
     /* populate dead vars */
     for (const auto &var : vars_found) {
-        if (vars_alive.find(var) == vars_alive.end()) {
-            vars_dead.insert(var);
+        if (vars_used.find(var) == vars_used.end()) {
+            vars_unused.insert(var);
         }
     }
 }
@@ -93,7 +94,7 @@ StatBlock::get_vars(std::list<CParser::BlockItemContext *> ctxs) {
         if (is_scope2(next)) {
             get_vars_control_struct(next->statement());
         } else {
-            new VariableVisitor(next, vars_alive, vars_dead, vars_found);
+            new VariableVisitor(next, vars_used, vars_unused, vars_found);
         }
     }
 }
@@ -107,12 +108,12 @@ StatBlock::to_string() const {
         builder << get_text(inst) << "\n";
     }
     builder << "..................\n";
-    builder << "Alive variables [ ";
-    for (const auto &alive : vars_alive) {
+    builder << "Used variables [ ";
+    for (const auto &alive : vars_used) {
         builder << alive << " ";
     }
-    builder << "]\nDead variables [ ";
-    for (const auto &dead : vars_dead) {
+    builder << "]\nUnused variables [ ";
+    for (const auto &dead : vars_unused) {
         builder << dead << " ";
     }
     builder << "]\n";
@@ -126,7 +127,13 @@ StatBlock::get_txt(int tabs) const {
     std::stringstream builder;
     for (auto stat : instructions) {
         std::string text = get_text(stat);
-        builder << prefix << text << "\n";
+
+        std::istringstream text_stream(text);
+        std::string line;
+
+        while (std::getline(text_stream, line)) {
+            builder << prefix << line << "\n";
+        }
     }
     return builder.str();
 }
