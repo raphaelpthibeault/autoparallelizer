@@ -9,9 +9,11 @@ add_subdirectory(antlr4-cpp-runtime)
 
 add_executable(${PROJECT_NAME}
     antlr4-gen/CBaseVisitor.cpp
+    antlr4-gen/CBaseListener.cpp
     antlr4-gen/CLexer.cpp
     antlr4-gen/CParser.cpp
     antlr4-gen/CVisitor.cpp
+    antlr4-gen/CListener.cpp
     parallelizer/semantic-concepts/statblock.cpp
     parallelizer/semantic-concepts/function.cpp
     parallelizer/semantic-concepts/program.cpp
@@ -28,6 +30,7 @@ include_directories(
     antlr4-gen/
     parallelizer/
     visitors/
+    listeners/
     util/
 )
 

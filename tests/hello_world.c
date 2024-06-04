@@ -7,6 +7,18 @@ struct structA {
     int zzz;
 };
 
+struct structB {
+    int z;
+    int zz;
+    int zzz;
+};
+
+struct structC {
+    int z;
+    int zz;
+    int zzz;
+};
+
 void
 baz(int x) {
     printf("%d\n", x);

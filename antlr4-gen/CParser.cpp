@@ -2,6 +2,7 @@
 // Generated from C.g4 by ANTLR 4.13.1
 
 
+#include "CListener.h"
 #include "CVisitor.h"
 
 #include "CParser.h"
@@ -623,6 +624,18 @@ size_t CParser::PrimaryExpressionContext::getRuleIndex() const {
   return CParser::RulePrimaryExpression;
 }
 
+void CParser::PrimaryExpressionContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterPrimaryExpression(this);
+}
+
+void CParser::PrimaryExpressionContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitPrimaryExpression(this);
+}
+
 
 std::any CParser::PrimaryExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<CVisitor*>(visitor))
@@ -796,6 +809,18 @@ size_t CParser::GenericSelectionContext::getRuleIndex() const {
   return CParser::RuleGenericSelection;
 }
 
+void CParser::GenericSelectionContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterGenericSelection(this);
+}
+
+void CParser::GenericSelectionContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitGenericSelection(this);
+}
+
 
 std::any CParser::GenericSelectionContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<CVisitor*>(visitor))
@@ -865,6 +890,18 @@ tree::TerminalNode* CParser::GenericAssocListContext::Comma(size_t i) {
 
 size_t CParser::GenericAssocListContext::getRuleIndex() const {
   return CParser::RuleGenericAssocList;
+}
+
+void CParser::GenericAssocListContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterGenericAssocList(this);
+}
+
+void CParser::GenericAssocListContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitGenericAssocList(this);
 }
 
 
@@ -939,6 +976,18 @@ tree::TerminalNode* CParser::GenericAssociationContext::Default() {
 
 size_t CParser::GenericAssociationContext::getRuleIndex() const {
   return CParser::RuleGenericAssociation;
+}
+
+void CParser::GenericAssociationContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterGenericAssociation(this);
+}
+
+void CParser::GenericAssociationContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitGenericAssociation(this);
 }
 
 
@@ -1141,6 +1190,18 @@ size_t CParser::PostfixExpressionContext::getRuleIndex() const {
   return CParser::RulePostfixExpression;
 }
 
+void CParser::PostfixExpressionContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterPostfixExpression(this);
+}
+
+void CParser::PostfixExpressionContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitPostfixExpression(this);
+}
+
 
 std::any CParser::PostfixExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<CVisitor*>(visitor))
@@ -1318,6 +1379,18 @@ size_t CParser::ArgumentExpressionListContext::getRuleIndex() const {
   return CParser::RuleArgumentExpressionList;
 }
 
+void CParser::ArgumentExpressionListContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterArgumentExpressionList(this);
+}
+
+void CParser::ArgumentExpressionListContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitArgumentExpressionList(this);
+}
+
 
 std::any CParser::ArgumentExpressionListContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<CVisitor*>(visitor))
@@ -1434,6 +1507,18 @@ tree::TerminalNode* CParser::UnaryExpressionContext::MinusMinus(size_t i) {
 
 size_t CParser::UnaryExpressionContext::getRuleIndex() const {
   return CParser::RuleUnaryExpression;
+}
+
+void CParser::UnaryExpressionContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterUnaryExpression(this);
+}
+
+void CParser::UnaryExpressionContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitUnaryExpression(this);
 }
 
 
@@ -1587,6 +1672,18 @@ size_t CParser::UnaryOperatorContext::getRuleIndex() const {
   return CParser::RuleUnaryOperator;
 }
 
+void CParser::UnaryOperatorContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterUnaryOperator(this);
+}
+
+void CParser::UnaryOperatorContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitUnaryOperator(this);
+}
+
 
 std::any CParser::UnaryOperatorContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<CVisitor*>(visitor))
@@ -1663,6 +1760,18 @@ tree::TerminalNode* CParser::CastExpressionContext::DigitSequence() {
 
 size_t CParser::CastExpressionContext::getRuleIndex() const {
   return CParser::RuleCastExpression;
+}
+
+void CParser::CastExpressionContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterCastExpression(this);
+}
+
+void CParser::CastExpressionContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitCastExpression(this);
 }
 
 
@@ -1781,6 +1890,18 @@ size_t CParser::MultiplicativeExpressionContext::getRuleIndex() const {
   return CParser::RuleMultiplicativeExpression;
 }
 
+void CParser::MultiplicativeExpressionContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterMultiplicativeExpression(this);
+}
+
+void CParser::MultiplicativeExpressionContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitMultiplicativeExpression(this);
+}
+
 
 std::any CParser::MultiplicativeExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<CVisitor*>(visitor))
@@ -1870,6 +1991,18 @@ tree::TerminalNode* CParser::AdditiveExpressionContext::Minus(size_t i) {
 
 size_t CParser::AdditiveExpressionContext::getRuleIndex() const {
   return CParser::RuleAdditiveExpression;
+}
+
+void CParser::AdditiveExpressionContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterAdditiveExpression(this);
+}
+
+void CParser::AdditiveExpressionContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitAdditiveExpression(this);
 }
 
 
@@ -1963,6 +2096,18 @@ tree::TerminalNode* CParser::ShiftExpressionContext::RightShift(size_t i) {
 
 size_t CParser::ShiftExpressionContext::getRuleIndex() const {
   return CParser::RuleShiftExpression;
+}
+
+void CParser::ShiftExpressionContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterShiftExpression(this);
+}
+
+void CParser::ShiftExpressionContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitShiftExpression(this);
 }
 
 
@@ -2074,6 +2219,18 @@ size_t CParser::RelationalExpressionContext::getRuleIndex() const {
   return CParser::RuleRelationalExpression;
 }
 
+void CParser::RelationalExpressionContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterRelationalExpression(this);
+}
+
+void CParser::RelationalExpressionContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitRelationalExpression(this);
+}
+
 
 std::any CParser::RelationalExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<CVisitor*>(visitor))
@@ -2165,6 +2322,18 @@ size_t CParser::EqualityExpressionContext::getRuleIndex() const {
   return CParser::RuleEqualityExpression;
 }
 
+void CParser::EqualityExpressionContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterEqualityExpression(this);
+}
+
+void CParser::EqualityExpressionContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitEqualityExpression(this);
+}
+
 
 std::any CParser::EqualityExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<CVisitor*>(visitor))
@@ -2250,6 +2419,18 @@ size_t CParser::AndExpressionContext::getRuleIndex() const {
   return CParser::RuleAndExpression;
 }
 
+void CParser::AndExpressionContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterAndExpression(this);
+}
+
+void CParser::AndExpressionContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitAndExpression(this);
+}
+
 
 std::any CParser::AndExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<CVisitor*>(visitor))
@@ -2322,6 +2503,18 @@ tree::TerminalNode* CParser::ExclusiveOrExpressionContext::Caret(size_t i) {
 
 size_t CParser::ExclusiveOrExpressionContext::getRuleIndex() const {
   return CParser::RuleExclusiveOrExpression;
+}
+
+void CParser::ExclusiveOrExpressionContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterExclusiveOrExpression(this);
+}
+
+void CParser::ExclusiveOrExpressionContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitExclusiveOrExpression(this);
 }
 
 
@@ -2398,6 +2591,18 @@ size_t CParser::InclusiveOrExpressionContext::getRuleIndex() const {
   return CParser::RuleInclusiveOrExpression;
 }
 
+void CParser::InclusiveOrExpressionContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterInclusiveOrExpression(this);
+}
+
+void CParser::InclusiveOrExpressionContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitInclusiveOrExpression(this);
+}
+
 
 std::any CParser::InclusiveOrExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<CVisitor*>(visitor))
@@ -2472,6 +2677,18 @@ size_t CParser::LogicalAndExpressionContext::getRuleIndex() const {
   return CParser::RuleLogicalAndExpression;
 }
 
+void CParser::LogicalAndExpressionContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterLogicalAndExpression(this);
+}
+
+void CParser::LogicalAndExpressionContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitLogicalAndExpression(this);
+}
+
 
 std::any CParser::LogicalAndExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<CVisitor*>(visitor))
@@ -2544,6 +2761,18 @@ tree::TerminalNode* CParser::LogicalOrExpressionContext::OrOr(size_t i) {
 
 size_t CParser::LogicalOrExpressionContext::getRuleIndex() const {
   return CParser::RuleLogicalOrExpression;
+}
+
+void CParser::LogicalOrExpressionContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterLogicalOrExpression(this);
+}
+
+void CParser::LogicalOrExpressionContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitLogicalOrExpression(this);
 }
 
 
@@ -2624,6 +2853,18 @@ size_t CParser::ConditionalExpressionContext::getRuleIndex() const {
   return CParser::RuleConditionalExpression;
 }
 
+void CParser::ConditionalExpressionContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterConditionalExpression(this);
+}
+
+void CParser::ConditionalExpressionContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitConditionalExpression(this);
+}
+
 
 std::any CParser::ConditionalExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<CVisitor*>(visitor))
@@ -2702,6 +2943,18 @@ tree::TerminalNode* CParser::AssignmentExpressionContext::DigitSequence() {
 
 size_t CParser::AssignmentExpressionContext::getRuleIndex() const {
   return CParser::RuleAssignmentExpression;
+}
+
+void CParser::AssignmentExpressionContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterAssignmentExpression(this);
+}
+
+void CParser::AssignmentExpressionContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitAssignmentExpression(this);
 }
 
 
@@ -2821,6 +3074,18 @@ size_t CParser::AssignmentOperatorContext::getRuleIndex() const {
   return CParser::RuleAssignmentOperator;
 }
 
+void CParser::AssignmentOperatorContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterAssignmentOperator(this);
+}
+
+void CParser::AssignmentOperatorContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitAssignmentOperator(this);
+}
+
 
 std::any CParser::AssignmentOperatorContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<CVisitor*>(visitor))
@@ -2891,6 +3156,18 @@ size_t CParser::ExpressionContext::getRuleIndex() const {
   return CParser::RuleExpression;
 }
 
+void CParser::ExpressionContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterExpression(this);
+}
+
+void CParser::ExpressionContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitExpression(this);
+}
+
 
 std::any CParser::ExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<CVisitor*>(visitor))
@@ -2953,6 +3230,18 @@ size_t CParser::ConstantExpressionContext::getRuleIndex() const {
   return CParser::RuleConstantExpression;
 }
 
+void CParser::ConstantExpressionContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterConstantExpression(this);
+}
+
+void CParser::ConstantExpressionContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitConstantExpression(this);
+}
+
 
 std::any CParser::ConstantExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<CVisitor*>(visitor))
@@ -3012,6 +3301,18 @@ CParser::StaticAssertDeclarationContext* CParser::DeclarationContext::staticAsse
 
 size_t CParser::DeclarationContext::getRuleIndex() const {
   return CParser::RuleDeclaration;
+}
+
+void CParser::DeclarationContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterDeclaration(this);
+}
+
+void CParser::DeclarationContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitDeclaration(this);
 }
 
 
@@ -3133,6 +3434,18 @@ size_t CParser::DeclarationSpecifiersContext::getRuleIndex() const {
   return CParser::RuleDeclarationSpecifiers;
 }
 
+void CParser::DeclarationSpecifiersContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterDeclarationSpecifiers(this);
+}
+
+void CParser::DeclarationSpecifiersContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitDeclarationSpecifiers(this);
+}
+
 
 std::any CParser::DeclarationSpecifiersContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<CVisitor*>(visitor))
@@ -3201,6 +3514,18 @@ CParser::DeclarationSpecifierContext* CParser::DeclarationSpecifiers2Context::de
 
 size_t CParser::DeclarationSpecifiers2Context::getRuleIndex() const {
   return CParser::RuleDeclarationSpecifiers2;
+}
+
+void CParser::DeclarationSpecifiers2Context::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterDeclarationSpecifiers2(this);
+}
+
+void CParser::DeclarationSpecifiers2Context::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitDeclarationSpecifiers2(this);
 }
 
 
@@ -3276,6 +3601,18 @@ CParser::AlignmentSpecifierContext* CParser::DeclarationSpecifierContext::alignm
 
 size_t CParser::DeclarationSpecifierContext::getRuleIndex() const {
   return CParser::RuleDeclarationSpecifier;
+}
+
+void CParser::DeclarationSpecifierContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterDeclarationSpecifier(this);
+}
+
+void CParser::DeclarationSpecifierContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitDeclarationSpecifier(this);
 }
 
 
@@ -3377,6 +3714,18 @@ size_t CParser::InitDeclaratorListContext::getRuleIndex() const {
   return CParser::RuleInitDeclaratorList;
 }
 
+void CParser::InitDeclaratorListContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterInitDeclaratorList(this);
+}
+
+void CParser::InitDeclaratorListContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitInitDeclaratorList(this);
+}
+
 
 std::any CParser::InitDeclaratorListContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<CVisitor*>(visitor))
@@ -3445,6 +3794,18 @@ CParser::InitializerContext* CParser::InitDeclaratorContext::initializer() {
 
 size_t CParser::InitDeclaratorContext::getRuleIndex() const {
   return CParser::RuleInitDeclarator;
+}
+
+void CParser::InitDeclaratorContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterInitDeclarator(this);
+}
+
+void CParser::InitDeclaratorContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitInitDeclarator(this);
 }
 
 
@@ -3525,6 +3886,18 @@ tree::TerminalNode* CParser::StorageClassSpecifierContext::Register() {
 
 size_t CParser::StorageClassSpecifierContext::getRuleIndex() const {
   return CParser::RuleStorageClassSpecifier;
+}
+
+void CParser::StorageClassSpecifierContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterStorageClassSpecifier(this);
+}
+
+void CParser::StorageClassSpecifierContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitStorageClassSpecifier(this);
 }
 
 
@@ -3651,6 +4024,18 @@ CParser::ConstantExpressionContext* CParser::TypeSpecifierContext::constantExpre
 
 size_t CParser::TypeSpecifierContext::getRuleIndex() const {
   return CParser::RuleTypeSpecifier;
+}
+
+void CParser::TypeSpecifierContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterTypeSpecifier(this);
+}
+
+void CParser::TypeSpecifierContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitTypeSpecifier(this);
 }
 
 
@@ -3883,6 +4268,18 @@ size_t CParser::StructOrUnionSpecifierContext::getRuleIndex() const {
   return CParser::RuleStructOrUnionSpecifier;
 }
 
+void CParser::StructOrUnionSpecifierContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterStructOrUnionSpecifier(this);
+}
+
+void CParser::StructOrUnionSpecifierContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitStructOrUnionSpecifier(this);
+}
+
 
 std::any CParser::StructOrUnionSpecifierContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<CVisitor*>(visitor))
@@ -3970,6 +4367,18 @@ size_t CParser::StructOrUnionContext::getRuleIndex() const {
   return CParser::RuleStructOrUnion;
 }
 
+void CParser::StructOrUnionContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterStructOrUnion(this);
+}
+
+void CParser::StructOrUnionContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitStructOrUnion(this);
+}
+
 
 std::any CParser::StructOrUnionContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<CVisitor*>(visitor))
@@ -4031,6 +4440,18 @@ CParser::StructDeclarationContext* CParser::StructDeclarationListContext::struct
 
 size_t CParser::StructDeclarationListContext::getRuleIndex() const {
   return CParser::RuleStructDeclarationList;
+}
+
+void CParser::StructDeclarationListContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterStructDeclarationList(this);
+}
+
+void CParser::StructDeclarationListContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitStructDeclarationList(this);
 }
 
 
@@ -4102,6 +4523,18 @@ CParser::StaticAssertDeclarationContext* CParser::StructDeclarationContext::stat
 
 size_t CParser::StructDeclarationContext::getRuleIndex() const {
   return CParser::RuleStructDeclaration;
+}
+
+void CParser::StructDeclarationContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterStructDeclaration(this);
+}
+
+void CParser::StructDeclarationContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitStructDeclaration(this);
 }
 
 
@@ -4189,6 +4622,18 @@ CParser::SpecifierQualifierListContext* CParser::SpecifierQualifierListContext::
 
 size_t CParser::SpecifierQualifierListContext::getRuleIndex() const {
   return CParser::RuleSpecifierQualifierList;
+}
+
+void CParser::SpecifierQualifierListContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterSpecifierQualifierList(this);
+}
+
+void CParser::SpecifierQualifierListContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitSpecifierQualifierList(this);
 }
 
 
@@ -4281,6 +4726,18 @@ size_t CParser::StructDeclaratorListContext::getRuleIndex() const {
   return CParser::RuleStructDeclaratorList;
 }
 
+void CParser::StructDeclaratorListContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterStructDeclaratorList(this);
+}
+
+void CParser::StructDeclaratorListContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitStructDeclaratorList(this);
+}
+
 
 std::any CParser::StructDeclaratorListContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<CVisitor*>(visitor))
@@ -4349,6 +4806,18 @@ CParser::ConstantExpressionContext* CParser::StructDeclaratorContext::constantEx
 
 size_t CParser::StructDeclaratorContext::getRuleIndex() const {
   return CParser::RuleStructDeclarator;
+}
+
+void CParser::StructDeclaratorContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterStructDeclarator(this);
+}
+
+void CParser::StructDeclaratorContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitStructDeclarator(this);
 }
 
 
@@ -4448,6 +4917,18 @@ tree::TerminalNode* CParser::EnumSpecifierContext::Comma() {
 
 size_t CParser::EnumSpecifierContext::getRuleIndex() const {
   return CParser::RuleEnumSpecifier;
+}
+
+void CParser::EnumSpecifierContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterEnumSpecifier(this);
+}
+
+void CParser::EnumSpecifierContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitEnumSpecifier(this);
 }
 
 
@@ -4553,6 +5034,18 @@ size_t CParser::EnumeratorListContext::getRuleIndex() const {
   return CParser::RuleEnumeratorList;
 }
 
+void CParser::EnumeratorListContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterEnumeratorList(this);
+}
+
+void CParser::EnumeratorListContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitEnumeratorList(this);
+}
+
 
 std::any CParser::EnumeratorListContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<CVisitor*>(visitor))
@@ -4625,6 +5118,18 @@ size_t CParser::EnumeratorContext::getRuleIndex() const {
   return CParser::RuleEnumerator;
 }
 
+void CParser::EnumeratorContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterEnumerator(this);
+}
+
+void CParser::EnumeratorContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitEnumerator(this);
+}
+
 
 std::any CParser::EnumeratorContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<CVisitor*>(visitor))
@@ -4683,6 +5188,18 @@ tree::TerminalNode* CParser::EnumerationConstantContext::Identifier() {
 
 size_t CParser::EnumerationConstantContext::getRuleIndex() const {
   return CParser::RuleEnumerationConstant;
+}
+
+void CParser::EnumerationConstantContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterEnumerationConstant(this);
+}
+
+void CParser::EnumerationConstantContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitEnumerationConstant(this);
 }
 
 
@@ -4744,6 +5261,18 @@ tree::TerminalNode* CParser::AtomicTypeSpecifierContext::RightParen() {
 
 size_t CParser::AtomicTypeSpecifierContext::getRuleIndex() const {
   return CParser::RuleAtomicTypeSpecifier;
+}
+
+void CParser::AtomicTypeSpecifierContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterAtomicTypeSpecifier(this);
+}
+
+void CParser::AtomicTypeSpecifierContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitAtomicTypeSpecifier(this);
 }
 
 
@@ -4811,6 +5340,18 @@ tree::TerminalNode* CParser::TypeQualifierContext::Atomic() {
 
 size_t CParser::TypeQualifierContext::getRuleIndex() const {
   return CParser::RuleTypeQualifier;
+}
+
+void CParser::TypeQualifierContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterTypeQualifier(this);
+}
+
+void CParser::TypeQualifierContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitTypeQualifier(this);
 }
 
 
@@ -4889,6 +5430,18 @@ tree::TerminalNode* CParser::FunctionSpecifierContext::RightParen() {
 
 size_t CParser::FunctionSpecifierContext::getRuleIndex() const {
   return CParser::RuleFunctionSpecifier;
+}
+
+void CParser::FunctionSpecifierContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterFunctionSpecifier(this);
+}
+
+void CParser::FunctionSpecifierContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitFunctionSpecifier(this);
 }
 
 
@@ -5007,6 +5560,18 @@ size_t CParser::AlignmentSpecifierContext::getRuleIndex() const {
   return CParser::RuleAlignmentSpecifier;
 }
 
+void CParser::AlignmentSpecifierContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterAlignmentSpecifier(this);
+}
+
+void CParser::AlignmentSpecifierContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitAlignmentSpecifier(this);
+}
+
 
 std::any CParser::AlignmentSpecifierContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<CVisitor*>(visitor))
@@ -5088,6 +5653,18 @@ CParser::GccDeclaratorExtensionContext* CParser::DeclaratorContext::gccDeclarato
 
 size_t CParser::DeclaratorContext::getRuleIndex() const {
   return CParser::RuleDeclarator;
+}
+
+void CParser::DeclaratorContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterDeclarator(this);
+}
+
+void CParser::DeclaratorContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitDeclarator(this);
 }
 
 
@@ -5221,6 +5798,18 @@ CParser::IdentifierListContext* CParser::DirectDeclaratorContext::identifierList
 
 size_t CParser::DirectDeclaratorContext::getRuleIndex() const {
   return CParser::RuleDirectDeclarator;
+}
+
+void CParser::DirectDeclaratorContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterDirectDeclarator(this);
+}
+
+void CParser::DirectDeclaratorContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitDirectDeclarator(this);
 }
 
 
@@ -5486,6 +6075,18 @@ size_t CParser::VcSpecificModiferContext::getRuleIndex() const {
   return CParser::RuleVcSpecificModifer;
 }
 
+void CParser::VcSpecificModiferContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterVcSpecificModifer(this);
+}
+
+void CParser::VcSpecificModiferContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitVcSpecificModifer(this);
+}
+
 
 std::any CParser::VcSpecificModiferContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<CVisitor*>(visitor))
@@ -5558,6 +6159,18 @@ CParser::GccAttributeSpecifierContext* CParser::GccDeclaratorExtensionContext::g
 
 size_t CParser::GccDeclaratorExtensionContext::getRuleIndex() const {
   return CParser::RuleGccDeclaratorExtension;
+}
+
+void CParser::GccDeclaratorExtensionContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterGccDeclaratorExtension(this);
+}
+
+void CParser::GccDeclaratorExtensionContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitGccDeclaratorExtension(this);
 }
 
 
@@ -5657,6 +6270,18 @@ size_t CParser::GccAttributeSpecifierContext::getRuleIndex() const {
   return CParser::RuleGccAttributeSpecifier;
 }
 
+void CParser::GccAttributeSpecifierContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterGccAttributeSpecifier(this);
+}
+
+void CParser::GccAttributeSpecifierContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitGccAttributeSpecifier(this);
+}
+
 
 std::any CParser::GccAttributeSpecifierContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<CVisitor*>(visitor))
@@ -5726,6 +6351,18 @@ tree::TerminalNode* CParser::GccAttributeListContext::Comma(size_t i) {
 
 size_t CParser::GccAttributeListContext::getRuleIndex() const {
   return CParser::RuleGccAttributeList;
+}
+
+void CParser::GccAttributeListContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterGccAttributeList(this);
+}
+
+void CParser::GccAttributeListContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitGccAttributeList(this);
 }
 
 
@@ -5826,6 +6463,18 @@ size_t CParser::GccAttributeContext::getRuleIndex() const {
   return CParser::RuleGccAttribute;
 }
 
+void CParser::GccAttributeContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterGccAttribute(this);
+}
+
+void CParser::GccAttributeContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitGccAttribute(this);
+}
+
 
 std::any CParser::GccAttributeContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<CVisitor*>(visitor))
@@ -5922,6 +6571,18 @@ tree::TerminalNode* CParser::NestedParenthesesBlockContext::RightParen(size_t i)
 
 size_t CParser::NestedParenthesesBlockContext::getRuleIndex() const {
   return CParser::RuleNestedParenthesesBlock;
+}
+
+void CParser::NestedParenthesesBlockContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterNestedParenthesesBlock(this);
+}
+
+void CParser::NestedParenthesesBlockContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitNestedParenthesesBlock(this);
 }
 
 
@@ -6150,6 +6811,18 @@ size_t CParser::PointerContext::getRuleIndex() const {
   return CParser::RulePointer;
 }
 
+void CParser::PointerContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterPointer(this);
+}
+
+void CParser::PointerContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitPointer(this);
+}
+
 
 std::any CParser::PointerContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<CVisitor*>(visitor))
@@ -6232,6 +6905,18 @@ size_t CParser::TypeQualifierListContext::getRuleIndex() const {
   return CParser::RuleTypeQualifierList;
 }
 
+void CParser::TypeQualifierListContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterTypeQualifierList(this);
+}
+
+void CParser::TypeQualifierListContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitTypeQualifierList(this);
+}
+
 
 std::any CParser::TypeQualifierListContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<CVisitor*>(visitor))
@@ -6297,6 +6982,18 @@ tree::TerminalNode* CParser::ParameterTypeListContext::Ellipsis() {
 
 size_t CParser::ParameterTypeListContext::getRuleIndex() const {
   return CParser::RuleParameterTypeList;
+}
+
+void CParser::ParameterTypeListContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterParameterTypeList(this);
+}
+
+void CParser::ParameterTypeListContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitParameterTypeList(this);
 }
 
 
@@ -6369,6 +7066,18 @@ tree::TerminalNode* CParser::ParameterListContext::Comma(size_t i) {
 
 size_t CParser::ParameterListContext::getRuleIndex() const {
   return CParser::RuleParameterList;
+}
+
+void CParser::ParameterListContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterParameterList(this);
+}
+
+void CParser::ParameterListContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitParameterList(this);
 }
 
 
@@ -6445,6 +7154,18 @@ CParser::AbstractDeclaratorContext* CParser::ParameterDeclarationContext::abstra
 
 size_t CParser::ParameterDeclarationContext::getRuleIndex() const {
   return CParser::RuleParameterDeclaration;
+}
+
+void CParser::ParameterDeclarationContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterParameterDeclaration(this);
+}
+
+void CParser::ParameterDeclarationContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitParameterDeclaration(this);
 }
 
 
@@ -6537,6 +7258,18 @@ size_t CParser::IdentifierListContext::getRuleIndex() const {
   return CParser::RuleIdentifierList;
 }
 
+void CParser::IdentifierListContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterIdentifierList(this);
+}
+
+void CParser::IdentifierListContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitIdentifierList(this);
+}
+
 
 std::any CParser::IdentifierListContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<CVisitor*>(visitor))
@@ -6601,6 +7334,18 @@ CParser::AbstractDeclaratorContext* CParser::TypeNameContext::abstractDeclarator
 
 size_t CParser::TypeNameContext::getRuleIndex() const {
   return CParser::RuleTypeName;
+}
+
+void CParser::TypeNameContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterTypeName(this);
+}
+
+void CParser::TypeNameContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitTypeName(this);
 }
 
 
@@ -6672,6 +7417,18 @@ CParser::GccDeclaratorExtensionContext* CParser::AbstractDeclaratorContext::gccD
 
 size_t CParser::AbstractDeclaratorContext::getRuleIndex() const {
   return CParser::RuleAbstractDeclarator;
+}
+
+void CParser::AbstractDeclaratorContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterAbstractDeclarator(this);
+}
+
+void CParser::AbstractDeclaratorContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitAbstractDeclarator(this);
 }
 
 
@@ -6809,6 +7566,18 @@ CParser::DirectAbstractDeclaratorContext* CParser::DirectAbstractDeclaratorConte
 
 size_t CParser::DirectAbstractDeclaratorContext::getRuleIndex() const {
   return CParser::RuleDirectAbstractDeclarator;
+}
+
+void CParser::DirectAbstractDeclaratorContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterDirectAbstractDeclarator(this);
+}
+
+void CParser::DirectAbstractDeclaratorContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitDirectAbstractDeclarator(this);
 }
 
 
@@ -7144,6 +7913,18 @@ size_t CParser::TypedefNameContext::getRuleIndex() const {
   return CParser::RuleTypedefName;
 }
 
+void CParser::TypedefNameContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterTypedefName(this);
+}
+
+void CParser::TypedefNameContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitTypedefName(this);
+}
+
 
 std::any CParser::TypedefNameContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<CVisitor*>(visitor))
@@ -7207,6 +7988,18 @@ tree::TerminalNode* CParser::InitializerContext::Comma() {
 
 size_t CParser::InitializerContext::getRuleIndex() const {
   return CParser::RuleInitializer;
+}
+
+void CParser::InitializerContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterInitializer(this);
+}
+
+void CParser::InitializerContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitInitializer(this);
 }
 
 
@@ -7327,6 +8120,18 @@ size_t CParser::InitializerListContext::getRuleIndex() const {
   return CParser::RuleInitializerList;
 }
 
+void CParser::InitializerListContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterInitializerList(this);
+}
+
+void CParser::InitializerListContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitInitializerList(this);
+}
+
 
 std::any CParser::InitializerListContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<CVisitor*>(visitor))
@@ -7416,6 +8221,18 @@ size_t CParser::DesignationContext::getRuleIndex() const {
   return CParser::RuleDesignation;
 }
 
+void CParser::DesignationContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterDesignation(this);
+}
+
+void CParser::DesignationContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitDesignation(this);
+}
+
 
 std::any CParser::DesignationContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<CVisitor*>(visitor))
@@ -7469,6 +8286,18 @@ CParser::DesignatorContext* CParser::DesignatorListContext::designator(size_t i)
 
 size_t CParser::DesignatorListContext::getRuleIndex() const {
   return CParser::RuleDesignatorList;
+}
+
+void CParser::DesignatorListContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterDesignatorList(this);
+}
+
+void CParser::DesignatorListContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitDesignatorList(this);
 }
 
 
@@ -7545,6 +8374,18 @@ tree::TerminalNode* CParser::DesignatorContext::Identifier() {
 
 size_t CParser::DesignatorContext::getRuleIndex() const {
   return CParser::RuleDesignator;
+}
+
+void CParser::DesignatorContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterDesignator(this);
+}
+
+void CParser::DesignatorContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitDesignator(this);
 }
 
 
@@ -7645,6 +8486,18 @@ tree::TerminalNode* CParser::StaticAssertDeclarationContext::StringLiteral(size_
 
 size_t CParser::StaticAssertDeclarationContext::getRuleIndex() const {
   return CParser::RuleStaticAssertDeclaration;
+}
+
+void CParser::StaticAssertDeclarationContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterStaticAssertDeclaration(this);
+}
+
+void CParser::StaticAssertDeclarationContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitStaticAssertDeclaration(this);
 }
 
 
@@ -7775,6 +8628,18 @@ tree::TerminalNode* CParser::StatementContext::Comma(size_t i) {
 
 size_t CParser::StatementContext::getRuleIndex() const {
   return CParser::RuleStatement;
+}
+
+void CParser::StatementContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterStatement(this);
+}
+
+void CParser::StatementContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitStatement(this);
 }
 
 
@@ -7979,6 +8844,18 @@ size_t CParser::LabeledStatementContext::getRuleIndex() const {
   return CParser::RuleLabeledStatement;
 }
 
+void CParser::LabeledStatementContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterLabeledStatement(this);
+}
+
+void CParser::LabeledStatementContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitLabeledStatement(this);
+}
+
 
 std::any CParser::LabeledStatementContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<CVisitor*>(visitor))
@@ -8085,6 +8962,18 @@ size_t CParser::CompoundStatementContext::getRuleIndex() const {
   return CParser::RuleCompoundStatement;
 }
 
+void CParser::CompoundStatementContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterCompoundStatement(this);
+}
+
+void CParser::CompoundStatementContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitCompoundStatement(this);
+}
+
 
 std::any CParser::CompoundStatementContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<CVisitor*>(visitor))
@@ -8151,6 +9040,18 @@ size_t CParser::BlockItemListContext::getRuleIndex() const {
   return CParser::RuleBlockItemList;
 }
 
+void CParser::BlockItemListContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterBlockItemList(this);
+}
+
+void CParser::BlockItemListContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitBlockItemList(this);
+}
+
 
 std::any CParser::BlockItemListContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<CVisitor*>(visitor))
@@ -8213,6 +9114,18 @@ CParser::DeclarationContext* CParser::BlockItemContext::declaration() {
 
 size_t CParser::BlockItemContext::getRuleIndex() const {
   return CParser::RuleBlockItem;
+}
+
+void CParser::BlockItemContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterBlockItem(this);
+}
+
+void CParser::BlockItemContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitBlockItem(this);
 }
 
 
@@ -8283,6 +9196,18 @@ CParser::ExpressionContext* CParser::ExpressionStatementContext::expression() {
 
 size_t CParser::ExpressionStatementContext::getRuleIndex() const {
   return CParser::RuleExpressionStatement;
+}
+
+void CParser::ExpressionStatementContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterExpressionStatement(this);
+}
+
+void CParser::ExpressionStatementContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitExpressionStatement(this);
 }
 
 
@@ -8371,6 +9296,18 @@ tree::TerminalNode* CParser::SelectionStatementContext::Switch() {
 
 size_t CParser::SelectionStatementContext::getRuleIndex() const {
   return CParser::RuleSelectionStatement;
+}
+
+void CParser::SelectionStatementContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterSelectionStatement(this);
+}
+
+void CParser::SelectionStatementContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitSelectionStatement(this);
 }
 
 
@@ -8502,6 +9439,18 @@ size_t CParser::IterationStatementContext::getRuleIndex() const {
   return CParser::RuleIterationStatement;
 }
 
+void CParser::IterationStatementContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterIterationStatement(this);
+}
+
+void CParser::IterationStatementContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitIterationStatement(this);
+}
+
 
 std::any CParser::IterationStatementContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<CVisitor*>(visitor))
@@ -8623,6 +9572,18 @@ size_t CParser::ForConditionContext::getRuleIndex() const {
   return CParser::RuleForCondition;
 }
 
+void CParser::ForConditionContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterForCondition(this);
+}
+
+void CParser::ForConditionContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitForCondition(this);
+}
+
 
 std::any CParser::ForConditionContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<CVisitor*>(visitor))
@@ -8725,6 +9686,18 @@ size_t CParser::ForDeclarationContext::getRuleIndex() const {
   return CParser::RuleForDeclaration;
 }
 
+void CParser::ForDeclarationContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterForDeclaration(this);
+}
+
+void CParser::ForDeclarationContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitForDeclaration(this);
+}
+
 
 std::any CParser::ForDeclarationContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<CVisitor*>(visitor))
@@ -8795,6 +9768,18 @@ tree::TerminalNode* CParser::ForExpressionContext::Comma(size_t i) {
 
 size_t CParser::ForExpressionContext::getRuleIndex() const {
   return CParser::RuleForExpression;
+}
+
+void CParser::ForExpressionContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterForExpression(this);
+}
+
+void CParser::ForExpressionContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitForExpression(this);
 }
 
 
@@ -8885,6 +9870,18 @@ CParser::ExpressionContext* CParser::JumpStatementContext::expression() {
 
 size_t CParser::JumpStatementContext::getRuleIndex() const {
   return CParser::RuleJumpStatement;
+}
+
+void CParser::JumpStatementContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterJumpStatement(this);
+}
+
+void CParser::JumpStatementContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitJumpStatement(this);
 }
 
 
@@ -8991,6 +9988,18 @@ size_t CParser::CompilationUnitContext::getRuleIndex() const {
   return CParser::RuleCompilationUnit;
 }
 
+void CParser::CompilationUnitContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterCompilationUnit(this);
+}
+
+void CParser::CompilationUnitContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitCompilationUnit(this);
+}
+
 
 std::any CParser::CompilationUnitContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<CVisitor*>(visitor))
@@ -9053,6 +10062,18 @@ CParser::ExternalDeclarationContext* CParser::TranslationUnitContext::externalDe
 
 size_t CParser::TranslationUnitContext::getRuleIndex() const {
   return CParser::RuleTranslationUnit;
+}
+
+void CParser::TranslationUnitContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterTranslationUnit(this);
+}
+
+void CParser::TranslationUnitContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitTranslationUnit(this);
 }
 
 
@@ -9121,6 +10142,18 @@ tree::TerminalNode* CParser::ExternalDeclarationContext::Semi() {
 
 size_t CParser::ExternalDeclarationContext::getRuleIndex() const {
   return CParser::RuleExternalDeclaration;
+}
+
+void CParser::ExternalDeclarationContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterExternalDeclaration(this);
+}
+
+void CParser::ExternalDeclarationContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitExternalDeclaration(this);
 }
 
 
@@ -9208,6 +10241,18 @@ size_t CParser::FunctionDefinitionContext::getRuleIndex() const {
   return CParser::RuleFunctionDefinition;
 }
 
+void CParser::FunctionDefinitionContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterFunctionDefinition(this);
+}
+
+void CParser::FunctionDefinitionContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitFunctionDefinition(this);
+}
+
 
 std::any CParser::FunctionDefinitionContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<CVisitor*>(visitor))
@@ -9284,6 +10329,18 @@ CParser::DeclarationContext* CParser::DeclarationListContext::declaration(size_t
 
 size_t CParser::DeclarationListContext::getRuleIndex() const {
   return CParser::RuleDeclarationList;
+}
+
+void CParser::DeclarationListContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterDeclarationList(this);
+}
+
+void CParser::DeclarationListContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<CListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitDeclarationList(this);
 }
 
 

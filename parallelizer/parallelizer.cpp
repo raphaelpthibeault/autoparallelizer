@@ -1,5 +1,5 @@
 #include "parallelizer.hpp"
-#include "tree/ParseTree.h"
+#include <listeners.hpp>
 #include <cstdlib>
 #include <iostream>
 #include <visitors.hpp>
@@ -84,11 +84,15 @@ eliminate_dead_code(std::vector<std::shared_ptr<Function>> &order, Program &prog
 }
 
 void
-parallelize(CParser &parser) {
-    std::cout << "---------- Parallelization ----------\n";
+parallelize(CParser &parser, std::string &directives_and_macros) {
+    //std::cout << "---------- Parallelization ----------\n";
     Program prog;
-
+    prog.add(directives_and_macros);
+    prog.add("#include <omp.h>\n\n");
     antlr4::tree::ParseTree *tree = parser.compilationUnit();
+
+    GlobalVisitor gv(prog);
+    gv.visit(tree);
 
     //std::cout << "----- visit functions -----\n";
     visit_functions(tree, prog);
@@ -156,15 +160,6 @@ parallelize(CParser &parser) {
 
     //std::cout << "----- !find disconnected components -----\n";
 
-    // add the global directives
-
-    // parallelize
-
-    //std::cout << "\n\n\n\n";
-
-   /*
-    prog.add("#include <omp.h>\n");
-
 
     for (auto func: function_order) {
         prog.add(func->parallelize(false));
@@ -182,8 +177,8 @@ parallelize(CParser &parser) {
 
     outfile << prog.parallelized_code.str();
     outfile.close();
-*/
-    std::cout << "---------- !Parallelization ----------\n";
+
+    //std::cout << "---------- !Parallelization ----------\n";
 }
 
 void
@@ -194,7 +189,18 @@ parallelize(std::ifstream &file) {
     antlr4::CommonTokenStream tokens(&lexer);
     tokens.fill();
 
+
+    std::string directives_and_macros;
+    for (antlr4::Token *t : tokens.getTokens()) {
+        int type = t->getType();
+        std::string text = t->getText();
+
+        if (type == CLexer::Directive || type == CLexer::MultiLineMacro) {
+            directives_and_macros += text + "\n";
+        }
+    }
+
     CParser parser(&tokens);
 
-    parallelize(parser);
+    parallelize(parser, directives_and_macros);
 }
