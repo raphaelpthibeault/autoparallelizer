@@ -76,8 +76,7 @@ eliminate_dead_code(std::vector<std::shared_ptr<Function>> &order, Program &prog
 }
 
 void
-parallelize(CParser &parser, std::string &directives_and_macros) {
-    //std::cout << "---------- Parallelization ----------\n";
+naive_parallelize(CParser &parser, std::string &directives_and_macros) {
     Program prog;
     prog.add(directives_and_macros);
     prog.add("#include <omp.h>\n\n");
@@ -86,78 +85,31 @@ parallelize(CParser &parser, std::string &directives_and_macros) {
     GlobalVisitor gv(prog);
     gv.visit(tree);
 
-    //std::cout << "----- visit functions -----\n";
     visit_functions(tree, prog);
-    //prog.print_defined_functions();
-    //std::cout << "----- !visit functions -----\n";
-
-    //std::cout << "----- visit callgraphs -----\n";
     visit_callgraphs(tree, prog);
-    //prog.print_call_graph();
-
-    //std::cout << "----- !visit callgraphs -----\n\n";
-
-    //std::cout << "----- topsort functions -----\n";
     std::vector<std::shared_ptr<Function>> function_order = sort(prog.call_graph);
-    //for (auto func : function_order) {
-    //    std::cout << func->id << " " << "\n";
-    //}
-    //std::cout << "----- !topsort functions -----\n\n";
 
-    //std::cout << "----- build flow graphs -----\n";
     for (auto func : function_order) {
         func->build_flow_graph();
     }
-    //std::cout << "----- !build flow graphs -----\n\n";
 
-    //std::cout << "----- find dependencies -----\n";
     for (auto func : function_order) {
         func->find_dependencies();
     }
 
-    for (auto func : function_order) {
-       //func->print_flow_graph();
-    }
-
-    //std::cout << "----- !find dependencies -----\n";
-
-    //std::cout << "----- eliminate dead code -----\n";
     function_order = eliminate_dead_code(function_order, prog);
-    //std::cout << "----- !eliminate dead code -----\n";
 
-    //std::cout << "----- build dependency graph -----\n";
     for (auto func: function_order) {
         func->build_dependency_graph();
     }
 
-    /*
-    for (auto func : function_order) {
-        //func->print_dependency_graph();
-    }
-    std::cout << "\n\n";
-*/
-    //std::cout << "----- !build dependency graph -----\n";
-
-    //std::cout << "----- find disconnected components -----\n";
-
-
     for (auto func: function_order) {
-        //func->find_disconnected_components();
         func->determine_blocks_components();
     }
 
-    for (auto func : function_order) {
-       // func->print_blocks_order();
-    }
-
-    //std::cout << "----- !find disconnected components -----\n";
-
-
     for (auto func: function_order) {
-        prog.add(func->parallelize(false));
+        prog.add(func->naive_parallelize(false));
     }
-
-    // write to file
 
     std::string filename = "parallelized.c";
 
@@ -194,5 +146,5 @@ parallelize(std::ifstream &file) {
 
     CParser parser(&tokens);
 
-    parallelize(parser, directives_and_macros);
+    naive_parallelize(parser, directives_and_macros);
 }

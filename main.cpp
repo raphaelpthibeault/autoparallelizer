@@ -46,7 +46,6 @@ main(int argc, char** argv) {
         return 1;
     }
 
-    //sanity_check(file);
     parallelize(file);
 
     file.close();

@@ -85,7 +85,7 @@ Function::build_flow_graph() {
             }
 */
         } else {
-            /* function calls and assignments */
+            /* assignments */
             curr.add_instruction(inst);
         }
     }
@@ -187,7 +187,7 @@ Function::get_virtual_name(CParser::PostfixExpressionContext *ctx) {
 }
 
 std::string
-Function::parallelize(bool reduction_operation) const {
+Function::naive_parallelize(bool reduction_operation) const {
     if (function_ctx == nullptr)
         return "";
 

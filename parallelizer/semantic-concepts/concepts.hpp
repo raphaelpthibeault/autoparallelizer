@@ -66,7 +66,7 @@ public:
     void find_dependencies();
     static std::string get_virtual_name(CParser::FunctionDefinitionContext *ctx);
     static std::string get_virtual_name(CParser::PostfixExpressionContext *ctx);
-    std::string parallelize(bool reduction_operation) const;
+    std::string naive_parallelize(bool reduction_operation) const;
     void parallelize_reduction(StatBlock &block, const std::map<std::string, std::vector<std::string>> &reduction, std::stringstream &parallelized, int tabs) const;
     bool check_assignment(CParser::AssignmentExpressionContext *assign, std::map<std::string, std::string> &reduction_vars) const;
     bool check_min_max(const std::string &left, CParser::AssignmentExpressionContext *expr2, std::map<std::string, std::string> &reduction_vars) const;
