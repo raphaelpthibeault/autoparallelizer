@@ -80,8 +80,9 @@ VariableVisitor::visitDeclaration(CParser::DeclarationContext *ctx) {
 
 antlrcpp::Any
 VariableVisitor::visitAssignmentExpression(CParser::AssignmentExpressionContext *ctx) {
-    // ignores the left side of all assignment operators (=, +=, *= ...) and unary operators (++) in one shot
-    if (ctx->assignmentExpression() != nullptr) {
+    if (ctx->assignmentOperator() != nullptr && ctx->assignmentOperator()->Assign() == nullptr) {
+        analyze_expression(Function::analyze(get_text(ctx)));
+    } else if (ctx->assignmentExpression() != nullptr) {
         analyze_expression(Function::analyze(get_text(ctx->assignmentExpression())));
     }
 
