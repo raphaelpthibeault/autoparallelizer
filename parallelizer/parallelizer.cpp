@@ -111,7 +111,7 @@ naive_parallelize(CParser &parser, std::string &directives_and_macros) {
         prog.add(func->naive_parallelize(false));
     }
 
-    std::string filename = "parallelized.c";
+    std::string filename = "naively_parallelized.c";
 
     std::ofstream outfile(filename);
     if (!outfile) {
@@ -124,6 +124,23 @@ naive_parallelize(CParser &parser, std::string &directives_and_macros) {
 
     //std::cout << "---------- !Parallelization ----------\n";
 }
+
+void
+task_parallelization(CParser &parser, std::string &directives_and_macros) {
+    Program prog;
+    prog.add(directives_and_macros);
+    prog.add("#include <omp.h>\n\n");
+    antlr4::tree::ParseTree *tree = parser.compilationUnit();
+
+    GlobalVisitor gv(prog);
+    gv.visit(tree);
+
+
+
+
+    //std::cout << prog.parallelized_code.str();
+}
+
 
 void
 parallelize(std::ifstream &file) {
@@ -147,4 +164,6 @@ parallelize(std::ifstream &file) {
     CParser parser(&tokens);
 
     naive_parallelize(parser, directives_and_macros);
+    //task_parallelization(parser, directives_and_macros);
+
 }

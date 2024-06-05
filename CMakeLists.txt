@@ -14,9 +14,9 @@ add_executable(${PROJECT_NAME}
     antlr4-gen/CParser.cpp
     antlr4-gen/CVisitor.cpp
     antlr4-gen/CListener.cpp
-    parallelizer/semantic-concepts/statblock.cpp
-    parallelizer/semantic-concepts/function.cpp
-    parallelizer/semantic-concepts/program.cpp
+    parallelizer/naivepar/semantic-concepts/statblock.cpp
+    parallelizer/naivepar/semantic-concepts/function.cpp
+    parallelizer/naivepar/semantic-concepts/program.cpp
     parallelizer/parallelizer.cpp
     visitors/global_visitor.cpp
     visitors/variable_visitor.cpp
@@ -29,6 +29,8 @@ add_executable(${PROJECT_NAME}
 include_directories(
     antlr4-gen/
     parallelizer/
+    parallelizer/naivepar/
+    parallelizer/taskpar/
     visitors/
     listeners/
     util/
