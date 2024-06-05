@@ -7,7 +7,7 @@
 
 std::string get_text(const antlr4::ParserRuleContext *);
 void print_to_file(const std::string &, const std::string &);
-bool is_scope2(CParser::BlockItemContext * ctx);
-bool is_scope2(CParser::StatementContext * ctx);
+bool is_scope(CParser::BlockItemContext * ctx);
+bool is_scope(CParser::StatementContext * ctx);
 
 #endif // __UTIL_HPP

@@ -25,7 +25,7 @@ print_to_file(const std::string &f_name, const std::string &content) {
 }
 
 bool
-is_scope2(CParser::BlockItemContext *ctx) {
+is_scope(CParser::BlockItemContext *ctx) {
     return ctx->statement() != nullptr &&
             (ctx->statement()->iterationStatement() != nullptr ||
              ctx->statement()->compoundStatement() != nullptr ||
@@ -33,7 +33,7 @@ is_scope2(CParser::BlockItemContext *ctx) {
 }
 
 bool
-is_scope2(CParser::StatementContext *ctx) {
+is_scope(CParser::StatementContext *ctx) {
     return ctx != nullptr &&
             (ctx->iterationStatement() != nullptr ||
              ctx->compoundStatement() != nullptr ||

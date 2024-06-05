@@ -11,7 +11,8 @@ Program::add(const std::string &new_code) {
 void
 Program::print_defined_functions() {
     for (const auto &entry : defined_functions) {
-        std::cout << "Function: " << entry.first << " " << entry.second->body_ctx->getText() << "\n";
+        //std::cout << "Function: " << entry.first << " " << entry.second->body_ctx->getText() << "\n";
+        std::cout << "Function: " << entry.first << "\n";
     }
 }
 
@@ -21,7 +22,7 @@ Program::print_call_graph() {
         const auto& function = entry.first;
         const auto& neighbors = entry.second;
 
-        std::cout << function->id << " " << function->body_ctx->getText() << " -> ";
+        std::cout << function->id << " " << " -> ";
         for (const auto& neighbor : neighbors) {
             std::cout << neighbor->id << " ";
         }

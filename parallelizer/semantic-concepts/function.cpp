@@ -1,5 +1,7 @@
 #include "concepts.hpp"
+#include "util.hpp"
 #include <algorithm>
+#include <iostream>
 #include <iterator>
 #include <memory>
 #include <sstream>
@@ -24,8 +26,19 @@ Function::build_flow_graph() {
 
     StatBlock curr(index++);
 
+    std::string returned_var_name;
+
+    // first pass to identify the returned variable (if any)
     for (auto *inst : body_ctx->blockItemList()->blockItem()) {
-        if (is_scope2(inst)) {
+        if (inst->statement() != nullptr && inst->statement()->jumpStatement() != nullptr && inst->statement()->jumpStatement()->Return() != nullptr) {
+            returned_var_name = get_text(inst->statement()->jumpStatement()->expression());
+            break;
+        }
+    }
+
+    // second pass for flow_graph
+    for (auto *inst : body_ctx->blockItemList()->blockItem()) {
+        if (is_scope(inst)) {
             if (curr.instructions.empty()) {
                 curr.add_instruction(inst);
                 flow_graph.push_back(curr);
@@ -42,8 +55,35 @@ Function::build_flow_graph() {
             ret_block->add_instruction(inst);
         } else if (inst->declaration() != nullptr) {
             /* declarations (and declaration + assignment in one step) */
-            /* what if I keep the decl_block just for the declarations e.g. 'int x;' */
-            curr.add_instruction(inst);
+            if (!decl_block) {
+                decl_block = std::make_unique<StatBlock>(0);
+            }
+            decl_block->add_instruction(inst);
+/*/
+            if (!returned_var_name.empty()) {
+                bool contains_returned_var = false;
+                for (auto init_decl : inst->declaration()->initDeclaratorList()->initDeclarator()) {
+                    auto id = init_decl->declarator()->directDeclarator()->Identifier();
+                    if (id != nullptr && id->getText() == returned_var_name) {
+                        contains_returned_var = true;
+                        // trouble is this could be in a list e.g. int i, return_var;
+                        break;
+                    }
+                }
+
+                if (contains_returned_var) {
+                    // TODO: extract and reconstruction
+                    if (!decl_block) {
+                        decl_block = std::make_unique<StatBlock>(index++);
+                    }
+                    decl_block->add_instruction(inst);
+                } else {
+                    curr.add_instruction(inst);
+                }
+            } else {
+                curr.add_instruction(inst);
+            }
+*/
         } else {
             /* function calls and assignments */
             curr.add_instruction(inst);
@@ -53,7 +93,6 @@ Function::build_flow_graph() {
     if (!curr.instructions.empty()) {
         flow_graph.push_back(curr);
     }
-
 }
 
 void
@@ -76,18 +115,22 @@ Function::build_dependency_graph() {
     }
 
     for (i = 0; i < flow_graph.size(); ++i) {
-        for (const auto &alive : flow_graph[i].vars_used) {
+        for (const auto &used : flow_graph[i].vars_used) {
             for (j = i - 1; j >= 0; --j) {
-                if (flow_graph[j].vars_unused.count(alive)) {
+                if (flow_graph[j].vars_unused.count(used)&& !flow_graph[j].vars_declared.count(used) && !flow_graph[i].vars_declared.count(used)) {
+                    dependency_graph[blocks[j]].insert(blocks[i]);
+                    break;
+                } else if (flow_graph[j].vars_used.count(used) && !flow_graph[j].vars_declared.count(used) && !flow_graph[i].vars_declared.count(used)) {
                     dependency_graph[blocks[j]].insert(blocks[i]);
                     break;
                 }
             }
         }
-        for (const auto &dead : flow_graph[i].vars_unused) {
+        for (const auto &unused : flow_graph[i].vars_unused) {
             for (j = i - 1; j >= 0; --j) {
-                if (flow_graph[j].vars_used.count(dead)) {
+                if (flow_graph[j].vars_used.count(unused)&& !flow_graph[j].vars_declared.count(unused) && !flow_graph[i].vars_declared.count(unused)) {
                     dependency_graph[blocks[j]].insert(blocks[i]);
+                    break;
                 }
             }
         }
@@ -133,7 +176,12 @@ Function::get_virtual_name(CParser::PostfixExpressionContext *ctx) {
     if (ctx->primaryExpression()->Identifier() != nullptr) {
         name << ctx->primaryExpression()->Identifier()->getText();
     }
-    name << "-" << ctx->argumentExpressionList().size();
+
+    if (ctx->argumentExpressionList().size()) {
+        name << "-" << ctx->argumentExpressionList(0)->assignmentExpression().size();
+    } else {
+        name << "-0";
+    }
 
     return name.str();
 }
@@ -158,6 +206,10 @@ Function::parallelize(bool reduction_operation) const {
 
     parallelized << " {\n"; // function
 
+    if (decl_block) {
+        parallelized << decl_block->get_txt(1);
+    }
+
     std::vector<std::vector<StatBlock>> sections;
 
     for (const auto &[block, c] : blocks_components) {
@@ -167,32 +219,6 @@ Function::parallelize(bool reduction_operation) const {
 
         sections[c].emplace_back(block);
     }
-/*
-    for (const auto &section: sections) {
-        if (section.size() > 1) {
-            parallelized << "\t#pragma omp parallel sections\n\t{\n";
-            for (const auto& block : section) {
-                parallelized << "\t\t#pragma omp section\n\t\t{\n";
-                const auto &instructions = block.instructions;
-
-                if (reduction_operation) {
-                    //  if nonempty and is "for" block
-                } else {
-                   parallelized << block.get_txt(3);
-                }
-                parallelized << "\t\t}\n";
-            }
-
-            parallelized << "\t}\n";
-        } else {
-            const auto &instructions = section[0].instructions;
-            if (reduction_operation) {
-                //if nonempty and is "for" block
-            } else {
-                parallelized << section[0].get_txt(1);
-            }
-        }
-    }*/
 
     if (sections.size() > 1) {
         // Sections construct
@@ -218,9 +244,7 @@ Function::parallelize(bool reduction_operation) const {
         parallelized << ret_block->get_txt(1);
     }
 
-    parallelized << "}\n";
-
-    //std::cout << parallelized.str() << "\n\n\n\n";
+    parallelized << "}\n\n";
 
     return parallelized.str();
 }
@@ -429,11 +453,6 @@ Function::explore_component(const StatBlock& start, int c, std::map<StatBlock, b
             }
         }
     }
-}
-
-bool
-Function::is_scope(CParser::StatementContext *ctx) {
-    return ctx->iterationStatement() != nullptr || ctx->compoundStatement() != nullptr || ctx->selectionStatement() != nullptr;
 }
 
 void

@@ -17,7 +17,7 @@
 class StatBlock {
 public:
     std::list<CParser::BlockItemContext *> instructions;
-    std::set<std::string> vars_used, vars_unused, vars_found;
+    std::set<std::string> vars_used, vars_unused, vars_found, vars_declared;
 
     int id;
 
@@ -54,6 +54,7 @@ public:
     CParser::CompoundStatementContext *body_ctx;
     antlr4::ParserRuleContext *function_ctx;
     std::set<std::string> vars_alive, vars_dead;
+    std::unique_ptr<StatBlock> decl_block;
 
     Function(const std::string &id, CParser::CompoundStatementContext *body_ctx, antlr4::ParserRuleContext *function_ctx);
     Function(const std::string &id);
@@ -85,7 +86,6 @@ public:
     }
 
 private:
-    bool is_scope(CParser::StatementContext *ctx);
     void get_vars();
     void explore_component(const StatBlock& start, int componentId, std::map<StatBlock, bool>& visited);
 

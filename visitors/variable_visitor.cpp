@@ -3,41 +3,49 @@
 #include "util.hpp"
 #include "visitors.hpp"
 
-VariableVisitor::VariableVisitor(std::set<std::string> &vars_alive, std::set<std::string> &vars_dead, std::set<std::string> &vars_found)
-    : vars_alive(vars_alive), vars_dead(vars_dead), vars_found(vars_found) {}
+VariableVisitor::VariableVisitor(std::set<std::string> &vars_alive, std::set<std::string> &vars_dead, std::set<std::string> &vars_found, std::set<std::string> &vars_declared)
+    : vars_alive(vars_alive), vars_dead(vars_dead), vars_found(vars_found), vars_declared(vars_declared) {}
 
-VariableVisitor::VariableVisitor(CParser::StatementContext *ctx, std::set<std::string> &vars_alive, std::set<std::string> &vars_dead, std::set<std::string> &vars_found)
-    : VariableVisitor(vars_alive, vars_dead, vars_found) {
+VariableVisitor::VariableVisitor(CParser::StatementContext *ctx, std::set<std::string> &vars_alive, std::set<std::string> &vars_dead, std::set<std::string> &vars_found, std::set<std::string> &vars_declared)
+    : VariableVisitor(vars_alive, vars_dead, vars_found, vars_declared) {
     add_found_vars(Function::analyze(get_text(ctx)));
     visitChildren(ctx);
 }
 
-VariableVisitor::VariableVisitor(CParser::ForConditionContext *ctx, std::set<std::string> &vars_alive, std::set<std::string> &vars_dead, std::set<std::string> &vars_found)
-    : VariableVisitor(vars_alive, vars_dead, vars_found) {
+VariableVisitor::VariableVisitor(CParser::ForConditionContext *ctx, std::set<std::string> &vars_alive, std::set<std::string> &vars_dead, std::set<std::string> &vars_found, std::set<std::string> &vars_declared)
+    : VariableVisitor(vars_alive, vars_dead, vars_found, vars_declared) {
     add_found_vars(Function::analyze(get_text(ctx)));
     visitChildren(ctx);
 }
 
-VariableVisitor::VariableVisitor(CParser::ExpressionContext *ctx, std::set<std::string> &vars_alive, std::set<std::string> &vars_dead, std::set<std::string> &vars_found)
-    : VariableVisitor(vars_alive, vars_dead, vars_found) {
+VariableVisitor::VariableVisitor(CParser::ExpressionContext *ctx, std::set<std::string> &vars_alive, std::set<std::string> &vars_dead, std::set<std::string> &vars_found, std::set<std::string> &vars_declared)
+    : VariableVisitor(vars_alive, vars_dead, vars_found, vars_declared) {
     add_found_vars(Function::analyze(get_text(ctx)));
     visitChildren(ctx);
 }
 
-VariableVisitor::VariableVisitor(CParser::ForExpressionContext *ctx, std::set<std::string> &vars_alive, std::set<std::string> &vars_dead, std::set<std::string> &vars_found)
-    : VariableVisitor(vars_alive, vars_dead, vars_found) {
+VariableVisitor::VariableVisitor(CParser::ForExpressionContext *ctx, std::set<std::string> &vars_alive, std::set<std::string> &vars_dead, std::set<std::string> &vars_found, std::set<std::string> &vars_declared)
+    : VariableVisitor(vars_alive, vars_dead, vars_found, vars_declared) {
     add_found_vars(Function::analyze(get_text(ctx)));
     visitChildren(ctx);
 }
 
-VariableVisitor::VariableVisitor(CParser::ForDeclarationContext *ctx, std::set<std::string> &vars_alive, std::set<std::string> &vars_dead, std::set<std::string> &vars_found)
-    : VariableVisitor(vars_alive, vars_dead, vars_found) {
+VariableVisitor::VariableVisitor(CParser::ForDeclarationContext *ctx, std::set<std::string> &vars_alive, std::set<std::string> &vars_dead, std::set<std::string> &vars_found, std::set<std::string> &vars_declared)
+    : VariableVisitor(vars_alive, vars_dead, vars_found, vars_declared) {
+
+    if (ctx->initDeclaratorList() != nullptr) {
+        for (auto init_decl : ctx->initDeclaratorList()->initDeclarator()) {
+            std::string id = init_decl->declarator()->directDeclarator()->Identifier()->toString();
+            vars_declared.insert(id);
+        }
+    }
+
     add_found_vars(Function::analyze(get_text(ctx)));
     visitChildren(ctx);
 }
 
-VariableVisitor::VariableVisitor(CParser::BlockItemContext *ctx, std::set<std::string> &vars_alive, std::set<std::string> &vars_dead, std::set<std::string> &vars_found)
-    : VariableVisitor(vars_alive, vars_dead, vars_found) {
+VariableVisitor::VariableVisitor(CParser::BlockItemContext *ctx, std::set<std::string> &vars_alive, std::set<std::string> &vars_dead, std::set<std::string> &vars_found, std::set<std::string> &vars_declared)
+    : VariableVisitor(vars_alive, vars_dead, vars_found, vars_declared) {
     add_found_vars(Function::analyze(get_text(ctx)));
     visitChildren(ctx);
 }
@@ -51,6 +59,8 @@ VariableVisitor::visitDeclaration(CParser::DeclarationContext *ctx) {
 
     if (ctx->initDeclaratorList() != nullptr) {
         for (auto init_decl : ctx->initDeclaratorList()->initDeclarator()) {
+            std::string id = init_decl->declarator()->directDeclarator()->Identifier()->toString();
+            vars_declared.insert(id);
 
             if (init_decl->Assign() != nullptr && init_decl->initializer() != nullptr) {
                 analyze_expression(Function::analyze(get_text(init_decl->initializer())));

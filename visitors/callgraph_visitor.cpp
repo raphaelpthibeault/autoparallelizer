@@ -23,6 +23,10 @@ CallGraphVisitor::visitPostfixExpression(CParser::PostfixExpressionContext *ctx)
         return visitChildren(ctx);
     }
 
+    if (!(ctx->children.size() >= 3 && ctx->children[1]->getText() == "(")) {
+        return visitChildren(ctx);
+    }
+
     /* ctx is a function call at this point
 
     Notes:
@@ -37,9 +41,6 @@ CallGraphVisitor::visitPostfixExpression(CParser::PostfixExpressionContext *ctx)
     if (f_called_name == parent->first) {
         program.call_graph[parent->second].push_back(parent->second);
     } else if (program.defined_functions.count(f_called_name)) {
-        auto foo = program.defined_functions[f_called_name];
-        //std::cout << foo->id << "" << foo->body_ctx->getText() << "\n";
-
         // locally defined function
         program.call_graph[parent->second].push_back(program.defined_functions[f_called_name]);
         if (!program.is_caller_function(f_called_name)) {

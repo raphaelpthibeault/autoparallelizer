@@ -19,42 +19,34 @@ visit_callgraphs(antlr4::tree::ParseTree *tree, Program &prog) {
 }
 
 std::vector<std::shared_ptr<Function>>
-topsort(std::map<std::shared_ptr<Function>, std::vector<std::shared_ptr<Function>>> &call_graph) {
-    std::queue<std::shared_ptr<Function>> q;
-    std::unordered_map<std::shared_ptr<Function>, int> degree;
+sort(std::map<std::shared_ptr<Function>, std::vector<std::shared_ptr<Function>>> &call_graph) {
+    std::unordered_map<std::shared_ptr<Function>, bool> visited;
     std::vector<std::shared_ptr<Function>> ordered;
+    std::stack<std::shared_ptr<Function>> stack;
 
-    for (auto &entry : call_graph) {
-        degree[entry.first] = 0;
-    }
-
-    for (auto &entry : call_graph) {
-        for (auto &called : entry.second) {
-            degree[called]++;
+    auto visit = [&](std::shared_ptr<Function> f, auto&& visit) -> void {
+        if (visited[f]) {
+            return;
         }
-    }
 
-    for (auto &entry : call_graph) {
-        if (degree[entry.first] == 0) {
-            q.push(entry.first);
-        }
-    }
-
-    while (!q.empty()) {
-        std::shared_ptr<Function> f = q.front();
-        q.pop();
-
-        ordered.push_back(f);
+        visited[f] = true;
 
         for (auto &called : call_graph[f]) {
-            degree[called]--;
-            if (degree[called] == 0) {
-                q.push(called);
+            if (!visited[called]) {
+                visit(called, visit);
             }
         }
 
+        ordered.push_back(f);
+    };
+
+    for (auto &entry : call_graph) {
+        if (!visited[entry.first]) {
+            visit(entry.first, visit);
+        }
     }
 
+    std::reverse(ordered.begin(), ordered.end());
     return ordered;
 }
 
@@ -75,7 +67,7 @@ eliminate_dead_code(std::vector<std::shared_ptr<Function>> &order, Program &prog
     std::vector<std::shared_ptr<Function>> new_order;
 
     for (const auto &f : order) {
-        if (f->id == "main-0" || f->id == "main-2") {
+        if (f->id == "main-0" || f->id == "main-1" || f->id == "main-2") {
             eliminate_dead_code(f, visited, new_order, program);
         }
     }
@@ -102,12 +94,13 @@ parallelize(CParser &parser, std::string &directives_and_macros) {
     //std::cout << "----- visit callgraphs -----\n";
     visit_callgraphs(tree, prog);
     //prog.print_call_graph();
+
     //std::cout << "----- !visit callgraphs -----\n\n";
 
     //std::cout << "----- topsort functions -----\n";
-    std::vector<std::shared_ptr<Function>> function_order = topsort(prog.call_graph);
+    std::vector<std::shared_ptr<Function>> function_order = sort(prog.call_graph);
     //for (auto func : function_order) {
-    //    std::cout << func->id << " " << func->body_ctx->getText() << "\n";
+    //    std::cout << func->id << " " << "\n";
     //}
     //std::cout << "----- !topsort functions -----\n\n";
 
@@ -137,13 +130,12 @@ parallelize(CParser &parser, std::string &directives_and_macros) {
         func->build_dependency_graph();
     }
 
-/*
+    /*
     for (auto func : function_order) {
-        func->print_dependency_graph();
+        //func->print_dependency_graph();
     }
     std::cout << "\n\n";
 */
-
     //std::cout << "----- !build dependency graph -----\n";
 
     //std::cout << "----- find disconnected components -----\n";
